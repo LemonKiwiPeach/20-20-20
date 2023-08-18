@@ -130,7 +130,7 @@ function TwentyTwentyTwenty() {
         <ClockButton onClick={resetTimer} label="Reset" />
       </div>
 
-      <audio ref={audioRef} src="break-music.mp3" preload="auto"></audio>
+      <audio ref={audioRef} src={process.env.PUBLIC_URL + '/break-music.mp3'} preload="auto"></audio>
 
       <p className="caption">
         Sound from{' '}
