@@ -1,0 +1,54 @@
+.circle-progress-container {
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .circle-progress-container {
+    width: 80%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .circle-progress-container {
+    width: 70%;
+    max-width: 200px;
+  }
+}
+.circle-progress-container svg {
+  width: 100%;
+  height: auto;
+  transform: rotate(-90deg);
+}
+
+/* テキスト要素を90度回転させて、元の位置に戻します */
+.circle-progress-container text {
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+}
+
+.progress-circle {
+  stroke-dasharray: 595; /* 2 * π * 95 (円の半径) */
+  stroke-dashoffset: 595; /* 初めは全て隠れている状態 */
+  transition: stroke-dashoffset 0.3s;
+  animation: drawCircle linear;
+}
+
+@keyframes drawCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.caption {
+  margin: 0px 20px 10px 0px;
+  font-size: 12px;
+  text-align: center;
+  color: #888;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
