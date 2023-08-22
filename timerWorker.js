@@ -25,6 +25,10 @@ self.addEventListener('message', (e) => {
     case 'stop':
       clearInterval(timer);
       break;
+    case 'terminate':
+      seconds = 0;
+      breakTime = 0;
+      self.close();
     default:
       break;
   }
