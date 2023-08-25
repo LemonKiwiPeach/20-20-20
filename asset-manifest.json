@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/20-20-20/static/css/main.f0a580fa.css",
-    "main.js": "/20-20-20/static/js/main.b9484b96.js",
+    "main.css": "/20-20-20/static/css/main.ea0f7417.css",
+    "main.js": "/20-20-20/static/js/main.85c26a37.js",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/20-20-20/static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
     "static/media/fontawesome-webfont.eot": "/20-20-20/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
     "static/media/fontawesome-webfont.ttf?v=4.7.0": "/20-20-20/static/media/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
     "static/media/fontawesome-webfont.woff?v=4.7.0": "/20-20-20/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
     "static/media/fontawesome-webfont.woff2?v=4.7.0": "/20-20-20/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
     "index.html": "/20-20-20/index.html",
-    "main.f0a580fa.css.map": "/20-20-20/static/css/main.f0a580fa.css.map",
-    "main.b9484b96.js.map": "/20-20-20/static/js/main.b9484b96.js.map"
+    "main.ea0f7417.css.map": "/20-20-20/static/css/main.ea0f7417.css.map",
+    "main.85c26a37.js.map": "/20-20-20/static/js/main.85c26a37.js.map"
   },
   "entrypoints": [
-    "static/css/main.f0a580fa.css",
-    "static/js/main.b9484b96.js"
+    "static/css/main.ea0f7417.css",
+    "static/js/main.85c26a37.js"
   ]
 }
