@@ -1,0 +1,34 @@
+.volume-control-wrapper {
+  margin-right: 5px;
+}
+
+.volume-control .fa {
+  color: #3498db;
+}
+
+.volume-control {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.volume-control i {
+  width: 1em;
+}
+
+.volume-slider {
+  position: absolute;
+  z-index: 1;
+  bottom: 4em; /* アイコンからの距離を調整 */
+  width: 20px;
+}
+
+.volume-slider input[type='range'] {
+  cursor: pointer;
+  width: 100px; /* スライダーの高さ */
+  height: 20px; /* スライダーの幅 */
+  overflow: hidden;
+  transform: rotate(-90deg) translateX(-50%);
+  transform-origin: top left;
+}

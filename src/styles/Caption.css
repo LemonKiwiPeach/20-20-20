@@ -1,0 +1,23 @@
+.caption {
+  font-size: 6px;
+  text-align: center;
+  color: #888;
+  position: absolute;
+  bottom: 10%;
+  width: 100%;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .caption {
+    bottom: 13%;
+  }
+}
+.caption a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.caption a:hover {
+  text-decoration: underline;
+}

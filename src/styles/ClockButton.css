@@ -1,0 +1,46 @@
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* ボタン間のスペース */
+  pointer-events: auto;
+  position: absolute;
+  width: 100%;
+  bottom: 25%;
+}
+
+@media (max-width: 768px) {
+  .button-wrapper .button-label {
+    display: none; /* ラベルを非表示にする */
+  }
+}
+
+.button-label {
+  margin-left: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  transition: background-color 0.3s;
+}
+
+@media (max-width: 768px) {
+  button {
+    padding: 5px 10px;
+  }
+}
+
+button:hover {
+  background-color: #b5b5b5;
+}
+
+button.toggled {
+  background-color: #3498db;
+  color: white;
+}
+
+button.toggled:hover {
+  background-color: #2980b9;
+}
