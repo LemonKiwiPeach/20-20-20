@@ -161,11 +161,7 @@ const TwentyTwentyTwenty = () => {
               <ClockButton
                 onClick={() => {
                   setIsRunning(!isRunning);
-                  if (breakTime > 0) {
-                    startAlarm();
-                  } else {
-                    stopAlarm();
-                  }
+                  breakTime > 0 ? startAlarm() : stopAlarm();
                 }} //
                 isToggled={isRunning}
                 icon="fa-play"
