@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/TwentyTwentyTwenty.css';
-import '../styles/CircleProgress.css';
+import '../styles/ProgressCircle.css';
 import '../styles/Caption.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { TimerSettings } from '../TimerSettings';
@@ -8,6 +8,7 @@ import InfoButton from './InfoButton';
 import VolumeControl from './VolumeControl';
 import ClockButton from './ClockButton';
 import Tooltip from './Tooltip';
+import ProgressCircle from './ProgressCircle';
 import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
@@ -91,7 +92,7 @@ const TwentyTwentyTwenty = () => {
     timerSeconds > 0 //
       ? ((TimerSettings.TWENTY_MINUTES - timerSeconds) / TimerSettings.TWENTY_MINUTES) * TimerSettings.STROKE_LENGTH
       : ((TimerSettings.BREAK_TIME - breakTime) / TimerSettings.BREAK_TIME) * TimerSettings.STROKE_LENGTH;
-  const dashOffset = TimerSettings.STROKE_LENGTH - progress;
+  const strokeDashoffset = TimerSettings.STROKE_LENGTH - progress;
 
   const sendNotification = (message: string) => {
     if (Notification.permission === 'granted' && !notified) {
@@ -121,14 +122,6 @@ const TwentyTwentyTwenty = () => {
     }
   };
 
-  const formatTime = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  };
-
   const alarmTime = new Date();
   const alarmTimeInSeconds =
     alarmTime.getHours() * 3600 + //
@@ -145,16 +138,12 @@ const TwentyTwentyTwenty = () => {
             <InfoButton />
           </div>
 
-          <svg viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="95" fill="#e0e8ff" stroke="#e0e0e0" strokeWidth="10"></circle>
-            <circle cx="100" cy="100" r="95" fill="none" stroke="#3498db" strokeWidth="10" className="progress-circle" style={{ strokeDashoffset: dashOffset }}></circle>
-            <text x="50%" y="50%" dy=".3em" textAnchor="middle" fontSize="30" fontFamily="Arial">
-              {timerSeconds > 0 ? formatTime(timerSeconds) : formatTime(breakTime)}
-            </text>
-            <text x="50%" y="60%" dy=".3em" textAnchor="middle" fontSize="10" fontFamily="Arial" fill="gray">
-              {isRunning && timerSeconds > 0 && formatTime(alarmTimeInSeconds)}
-            </text>
-          </svg>
+          <ProgressCircle
+            strokeDashoffset={strokeDashoffset} //
+            timerSeconds={timerSeconds}
+            isRunning={isRunning}
+            alarmTimeInSeconds={alarmTimeInSeconds}
+          />
 
           <div className="button-wrapper">
             <Tooltip label="Start" toggledLabel="Pause" isToggled={isRunning}>
