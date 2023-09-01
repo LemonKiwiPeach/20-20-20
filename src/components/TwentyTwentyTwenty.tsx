@@ -133,11 +133,6 @@ const TwentyTwentyTwenty = () => {
     <>
       <div className="twenty-tweny-twenty">
         <div className="circle-progress-container">
-          <div className="control-buttons">
-            <VolumeControl volume={volume} onVolumeChange={handleVolumeChange} />
-            <InfoButton />
-          </div>
-
           <ProgressCircle
             strokeDashoffset={strokeDashoffset} //
             timerSeconds={timerSeconds}
@@ -145,7 +140,12 @@ const TwentyTwentyTwenty = () => {
             alarmTimeInSeconds={alarmTimeInSeconds}
           />
 
-          <div className="button-wrapper">
+          <div className="control-buttons-top">
+            <VolumeControl volume={volume} onVolumeChange={handleVolumeChange} />
+            <InfoButton />
+          </div>
+
+          <div className="control-buttons-bottom">
             <Tooltip label="Start" toggledLabel="Pause" isToggled={isRunning}>
               <ClockButton
                 onClick={() => {

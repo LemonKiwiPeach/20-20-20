@@ -30,7 +30,7 @@
   transform-origin: 50% 50%;
 }
 
-.control-buttons {
+.control-buttons-top {
   position: absolute;
   z-index: 1;
   width: 100%;
@@ -42,7 +42,7 @@
 }
 
 @media (max-width: 768px) {
-  .control-buttons i {
+  .control-buttons-top i {
     font-size: inherit;
   }
 }

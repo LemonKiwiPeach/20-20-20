@@ -1,7 +1,7 @@
-.button-wrapper {
+.control-buttons-bottom {
   display: flex;
   justify-content: center;
-  gap: 10px; /* ボタン間のスペース */
+  gap: 10px;
   pointer-events: auto;
   position: absolute;
   width: 100%;
@@ -9,8 +9,8 @@
 }
 
 @media (max-width: 768px) {
-  .button-wrapper .button-label {
-    display: none; /* ラベルを非表示にする */
+  .control-buttons-bottom .button-label {
+    display: none;
   }
 }
 
