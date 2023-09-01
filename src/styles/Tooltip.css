@@ -38,4 +38,5 @@
   border-width: 9px;
   border-style: solid;
   border-color: #fff transparent transparent transparent; /* Create the arrow */
+  pointer-events: none; /* Add this line */
 }
