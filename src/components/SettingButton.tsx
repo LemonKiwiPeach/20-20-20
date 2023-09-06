@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent } from "react";
 import { TimerSettings } from "../TimerSettings";
 import "../styles/SettingButton.css";
 import "../styles/Dialog.css";
+import "../styles/ControlButton.css";
 
 const SettingButton = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -45,7 +46,7 @@ const SettingButton = () => {
 
   return (
     <>
-      <div className="setting-button" onClick={() => setDialogOpen(true)}>
+      <div className="control-button setting-button" onClick={() => setDialogOpen(true)}>
         <i className={`fa fa-2x fa-gear`}></i>
       </div>
       {isDialogOpen && (

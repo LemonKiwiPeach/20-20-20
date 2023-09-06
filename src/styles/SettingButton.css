@@ -26,30 +26,9 @@ section {
   gap: 16px 0;
 }
 
-/* Dialog Overlay */
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
 /* Dialog Content */
 .dialog-content {
-  position: relative;
-  background-color: #fff;
-  padding: 24px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
   min-height: 500px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .dialog-content h2 {

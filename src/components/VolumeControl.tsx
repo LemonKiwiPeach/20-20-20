@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/VolumeControl.css';
+import "../styles/ControlButton.css";
 
 interface VolumeControlProps {
   volume: number;
