@@ -23,7 +23,7 @@ const VolumeControl: React.FC<VolumeControlProps> = ({ volume, onVolumeChange })
 
   return (
     <div className="volume-control-wrapper">
-      <div className="volume-control" onClick={toggleVolumeSlider}>
+      <div className="control-button volume-control" onClick={toggleVolumeSlider}>
         <i className={`fa fa-2x ${volume === 0 ? 'fa-volume-off' : 'fa-volume-up'}`}></i>
         {showVolumeSlider && (
           <div className="volume-slider">

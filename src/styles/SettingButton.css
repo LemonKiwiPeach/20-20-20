@@ -27,8 +27,8 @@ section {
 }
 
 /* Dialog Content */
-.dialog-content {
-  min-height: 500px;
+.settings {
+  height: 500px;
 }
 
 .dialog-content h2 {
