@@ -171,7 +171,6 @@ const TwentyTwentyTwenty = () => {
                 onClick={() => {
                   resetApp();
                   setIsRunning(false);
-                  setIsContinuousMode(false);
                 }} //
                 icon="fa-rotate-left"
               />
