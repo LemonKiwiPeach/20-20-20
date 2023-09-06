@@ -8,16 +8,6 @@
   bottom: 25%;
 }
 
-@media (max-width: 768px) {
-  .control-buttons-bottom .button-label {
-    display: none;
-  }
-}
-
-.button-label {
-  margin-left: 5px;
-}
-
 button {
   padding: 10px 20px;
   border: none;
@@ -26,21 +16,29 @@ button {
   transition: background-color 0.3s;
 }
 
-@media (max-width: 768px) {
-  button {
-    padding: 3px 6px;
-  }
-}
-
 button:hover {
   background-color: #b5b5b5;
 }
 
+button .fa {
+  color: #3498db;
+  color: #000;
+}
+
 button.toggled {
   background-color: #3498db;
-  color: white;
 }
 
 button.toggled:hover {
   background-color: #2980b9;
+}
+
+button.toggled .fa {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  button {
+    padding: 3px 6px;
+  }
 }

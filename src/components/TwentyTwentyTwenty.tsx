@@ -9,6 +9,7 @@ import VolumeControl from './VolumeControl';
 import ClockButton from './ClockButton';
 import Tooltip from './Tooltip';
 import ProgressCircle from './ProgressCircle';
+import SettingButton from './SettingButton';
 import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
@@ -143,6 +144,7 @@ const TwentyTwentyTwenty = () => {
           <div className="control-buttons-top">
             <VolumeControl volume={volume} onVolumeChange={handleVolumeChange} />
             <InfoButton />
+            <SettingButton/>
           </div>
 
           <div className="control-buttons-bottom">

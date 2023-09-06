@@ -1,4 +1,4 @@
-.info-button {
+/* .info-button {
   cursor: pointer;
   display: flex;
 }
@@ -29,6 +29,6 @@
 
 .close-button {
   margin-top: 10px;
-  margin-left: auto; /* ボタンを右端に移動 */
-  display: block; /* ボタンをブロック要素として表示 */
-}
+  margin-left: auto; 
+  display: block; 
+} */

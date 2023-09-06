@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/ClockButton.css';
+import React, { useState, useEffect } from "react";
+import "../styles/ClockButton.css";
 
 interface ClockButtonProps {
   onClick: () => void;
@@ -15,7 +15,7 @@ const ClockButton: React.FC<ClockButtonProps> = ({
   toggledIcon,
 }) => {
   return (
-    <button onClick={onClick} className={isToggled ? 'toggled' : ''}>
+    <button onClick={onClick} className={isToggled ? "toggled" : ""}>
       <i className={`fa ${isToggled && toggledIcon ? toggledIcon : icon}`}></i>
     </button>
   );

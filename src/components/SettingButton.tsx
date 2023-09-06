@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
-import "../styles/SettingButton.css";
 import { TimerSettings } from "../TimerSettings";
+import "../styles/SettingButton.css";
+import "../styles/Dialog.css";
 
 const SettingButton = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);

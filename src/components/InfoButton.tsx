@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import '../styles/InfoButton.css';
+import React, { useState } from "react";
+import "../styles/InfoButton.css";
+import "../styles/Dialog.css";
 
 const InfoButton = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
