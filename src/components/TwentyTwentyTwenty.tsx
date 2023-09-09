@@ -194,6 +194,7 @@ const TwentyTwentyTwenty = () => {
                 }}
                 isToggled={settings.isContinuous}
                 icon="fa-refresh"
+                badgeNumber={settings.repeatNumber}
               />
             </Tooltip>
 
