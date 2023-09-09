@@ -1,19 +1,23 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface Settings {
-  notificationMessage: string;
+  notificationStartMessage: string;
+  notificationFinishMessage: string;
   notificationDisplayTime: number;
   alarmSound: File | null;
   alarmTime: number;
   alarmVolume: number;
+  repeatNumber: number;
 }
 
 const defaultSettings: Settings = {
-  notificationMessage: 'Default Message',
+  notificationStartMessage: 'Break start',
+  notificationFinishMessage: 'Break finish',
   notificationDisplayTime: 5,
   alarmSound: null,
   alarmTime: 20,
   alarmVolume: 0.5,
+  repeatNumber: 10,
 };
 
 const SettingsContext = createContext<{
@@ -31,5 +35,10 @@ export const useSettings = () => {
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
-  return <SettingsContext.Provider value={{ settings, setSettings }}>{children}</SettingsContext.Provider>;
+  return (
+    <SettingsContext.Provider value={{ settings, setSettings }}>
+      {/*  */}
+      {children}
+    </SettingsContext.Provider>
+  );
 };

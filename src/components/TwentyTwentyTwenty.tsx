@@ -30,11 +30,17 @@ const TwentyTwentyTwenty = () => {
   // 音量
   const [storedVolume, setStoredVolume] = useLocalStorage<number>('volume', settings.alarmVolume);
   const [volume, setVolume] = useState<number>(storedVolume);
-  const { audioRef, startAlarm, stopAlarm, resetAlarm, adjustAlarmVolume } = useAlarm(volume);
+  const {
+    audioRef, //
+    startAlarm,
+    stopAlarm,
+    resetAlarm,
+    adjustAlarmVolume,
+  } = useAlarm(volume);
 
   useEffect(() => {
-    setVolume(settings.alarmVolume); // alarmVolume を更新
-  }, [settings.alarmVolume]); // settings.alarmVolume が変更されたときにこの useEffect を再実行
+    setVolume(settings.alarmVolume);
+  }, [settings.alarmVolume]);
 
   useEffect(() => {
     Notification.requestPermission();
@@ -72,7 +78,7 @@ const TwentyTwentyTwenty = () => {
   useEffect(() => {
     // タイマー20分経過してアラームが鳴り始めるとき
     if (timerSeconds === 0 && breakTime === 0) {
-      sendNotification(settings.notificationMessage);
+      sendNotification(settings.notificationStartMessage);
       startAlarm();
     }
 
@@ -81,7 +87,7 @@ const TwentyTwentyTwenty = () => {
       if (audioRef && audioRef.current !== null && audioRef.current.currentTime !== undefined) {
         resetAlarm();
       }
-      sendNotification(TimerSettings.NOTIFICATION_BREAK_OVER);
+      sendNotification(settings.notificationFinishMessage);
       resetApp();
     }
   }, [timerSeconds, breakTime, notified, isContinuousMode]);
@@ -106,7 +112,7 @@ const TwentyTwentyTwenty = () => {
       const notification = new Notification(message);
       setTimeout(() => {
         notification.close();
-      }, 5000);
+      }, settings.notificationDisplayTime);
     }
   };
 

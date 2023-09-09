@@ -8,27 +8,45 @@ import { useSettings } from './SettingsContext';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
+
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState<string>(TimerSettings.NOTIFICATION_BREAK_START);
-  const [notificationDisplayTime, setNotificationDisplayTime] = useState<number>(5);
+  const [notificationStartMessage, setNotificationStartMessage] = useState<string>(TimerSettings.NOTIFICATION_BREAK_START);
+  const [notificationFinishMessage, setNotificationFinishMessage] = useState<string>(TimerSettings.NOTIFICATION_BREAK_FINISH);
+  const [notificationDisplayTime, setNotificationDisplayTime] = useState<number>(TimerSettings.NOTIFICATION_DISPLAY_TIME);
   const [alarmSound, setAlarmSound] = useState<File | null>(null);
   const [alarmTime, setAlarmTime] = useState<number>(20);
   const [alarmVolume, setAlarmVolume] = useState<number>(0.5);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
+  const [repeatNumber, setRepeatNumber] = useState(10);
 
-  // Notification message
-  const handleNotificationMessage = (e: ChangeEvent<HTMLInputElement>) => {
+  // Notification start message
+  const handleNotificationStartMessage = (e: ChangeEvent<HTMLInputElement>) => {
     const newNotificationMessage = e.target.value;
-    setNotificationMessage(newNotificationMessage);
+    setNotificationStartMessage(newNotificationMessage);
     setSettings({
       ...settings,
-      notificationMessage: newNotificationMessage,
+      notificationStartMessage: newNotificationMessage,
+    });
+  };
+
+  // Notification finish message
+  const handleNotificationFinishMessage = (e: ChangeEvent<HTMLInputElement>) => {
+    const newNotificationMessage = e.target.value;
+    setNotificationFinishMessage(newNotificationMessage);
+    setSettings({
+      ...settings,
+      notificationFinishMessage: newNotificationMessage,
     });
   };
 
   // Notification display time
   const handleNotificationDisplayTime = (e: ChangeEvent<HTMLInputElement>) => {
-    setNotificationDisplayTime(parseInt(e.target.value));
+    const newNotificationDisplayTime = parseInt(e.target.value) * 1000;
+    setNotificationDisplayTime(newNotificationDisplayTime);
+    setSettings({
+      ...settings,
+      notificationDisplayTime: newNotificationDisplayTime,
+    });
   };
 
   // Alarm sound
@@ -42,7 +60,12 @@ const SettingButton = () => {
 
   // Alarm time
   const handleAlarmTime = (e: ChangeEvent<HTMLInputElement>) => {
+    const newAlarmTime = parseInt(e.target.value);
     setAlarmTime(parseInt(e.target.value));
+    setSettings({
+      ...settings, //
+      alarmTime: newAlarmTime,
+    });
   };
 
   // Alarm volume
@@ -52,6 +75,15 @@ const SettingButton = () => {
     setSettings({
       ...settings,
       alarmVolume: newAlarmVolume,
+    });
+  };
+
+  const handleRepeatNumber = (e: ChangeEvent<HTMLInputElement>) => {
+    const newRepeatNumber = parseInt(e.target.value);
+    setRepeatNumber(newRepeatNumber);
+    setSettings({
+      ...settings, //
+      repeatNumber: newRepeatNumber,
     });
   };
 
@@ -70,17 +102,45 @@ const SettingButton = () => {
               <div className={`settings-section ${selectedSettingItem === 'alarm' ? 'selected' : ''}`} onClick={() => setSelectedSettingItem('alarm')}>
                 アラーム
               </div>
+              <div className={`settings-section ${selectedSettingItem === 'others' ? 'selected' : ''}`} onClick={() => setSelectedSettingItem('others')}>
+                その他
+              </div>
             </aside>
             <section>
               {selectedSettingItem === 'notification' && (
                 <>
                   <div className="settings-item">
-                    <label htmlFor="notificationMessage">通知メッセージ</label>
-                    <input type="text" id="notificationMessage" value={notificationMessage} onChange={handleNotificationMessage} />
+                    <label>通知メッセージ</label>
                   </div>
+
+                  <div className="settings-item">
+                    <label htmlFor="notificationStartMessage">開始時</label>
+                    <input
+                      type="text" //
+                      id="notificationStartMessage"
+                      value={notificationStartMessage}
+                      onChange={handleNotificationStartMessage}
+                    />
+                  </div>
+
+                  <div className="settings-item">
+                    <label htmlFor="notificationMessage">終了時</label>
+                    <input
+                      type="text" //
+                      id="notificationMessage"
+                      value={notificationFinishMessage}
+                      onChange={handleNotificationFinishMessage}
+                    />
+                  </div>
+
                   <div className="settings-item">
                     <label htmlFor="notificationDisplayTime">表示時間</label>
-                    <input type="number" id="notificationDisplayTime" value={notificationDisplayTime} onChange={handleNotificationDisplayTime} />
+                    <input
+                      type="number" //
+                      id="notificationDisplayTime"
+                      value={notificationDisplayTime / 1000}
+                      onChange={handleNotificationDisplayTime}
+                    />
                   </div>
                 </>
               )}
@@ -96,7 +156,14 @@ const SettingButton = () => {
                   </div>
                   <div className="settings-item">
                     <label htmlFor="alarmTime">アラーム時間</label>
-                    <input type="number" id="alarmTime" value={alarmTime} onChange={handleAlarmTime} />
+                    <input
+                      type="number" //
+                      id="alarmTime"
+                      value={alarmTime}
+                      onChange={handleAlarmTime}
+                      max={20}
+                      min={1}
+                    />
                   </div>
                   <div className="settings-item">
                     <label htmlFor="alarmVolume">音量</label>
@@ -109,6 +176,22 @@ const SettingButton = () => {
                       step="0.1"
                       max="1"
                       min="0"
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedSettingItem === 'others' && (
+                <>
+                  <div className="settings-item">
+                    <label htmlFor="repeatNumber">繰り返し回数</label>
+                    <input
+                      type="number" //
+                      id="repeatNumber"
+                      value={repeatNumber}
+                      onChange={handleRepeatNumber}
+                      max={99}
+                      min={1}
                     />
                   </div>
                 </>
