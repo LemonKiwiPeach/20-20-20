@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent } from 'react';
-import { TimerSettings } from '../TimerSettings';
 import '../styles/SettingButton.css';
 import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
@@ -10,19 +9,11 @@ const SettingButton = () => {
   const { settings, setSettings } = useSettings();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [notificationStartMessage, setNotificationStartMessage] = useState<string>(TimerSettings.NOTIFICATION_BREAK_START);
-  const [notificationFinishMessage, setNotificationFinishMessage] = useState<string>(TimerSettings.NOTIFICATION_BREAK_FINISH);
-  const [notificationDisplayTime, setNotificationDisplayTime] = useState<number>(TimerSettings.NOTIFICATION_DISPLAY_TIME);
-  const [alarmSound, setAlarmSound] = useState<File | null>(null);
-  const [alarmTime, setAlarmTime] = useState<number>(20);
-  const [alarmVolume, setAlarmVolume] = useState<number>(0.5);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
-  const [repeatNumber, setRepeatNumber] = useState(10);
 
   // Notification start message
   const handleNotificationStartMessage = (e: ChangeEvent<HTMLInputElement>) => {
     const newNotificationMessage = e.target.value;
-    setNotificationStartMessage(newNotificationMessage);
     setSettings({
       ...settings,
       notificationStartMessage: newNotificationMessage,
@@ -32,7 +23,6 @@ const SettingButton = () => {
   // Notification finish message
   const handleNotificationFinishMessage = (e: ChangeEvent<HTMLInputElement>) => {
     const newNotificationMessage = e.target.value;
-    setNotificationFinishMessage(newNotificationMessage);
     setSettings({
       ...settings,
       notificationFinishMessage: newNotificationMessage,
@@ -42,7 +32,6 @@ const SettingButton = () => {
   // Notification display time
   const handleNotificationDisplayTime = (e: ChangeEvent<HTMLInputElement>) => {
     const newNotificationDisplayTime = parseInt(e.target.value) * 1000;
-    setNotificationDisplayTime(newNotificationDisplayTime);
     setSettings({
       ...settings,
       notificationDisplayTime: newNotificationDisplayTime,
@@ -51,17 +40,19 @@ const SettingButton = () => {
 
   // Alarm sound
   const handleAlarmSound = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      console.log(files[0]);
-      setAlarmSound(files[0]);
+    const newAlarmSoundFile = e.target.files;
+    if (newAlarmSoundFile) {
+      const newAlarmSoundName = newAlarmSoundFile[0].name;
+      setSettings({
+        ...settings, //
+        alarmSound: newAlarmSoundName,
+      });
     }
   };
 
   // Alarm time
   const handleAlarmTime = (e: ChangeEvent<HTMLInputElement>) => {
     const newAlarmTime = parseInt(e.target.value);
-    setAlarmTime(parseInt(e.target.value));
     setSettings({
       ...settings, //
       alarmTime: newAlarmTime,
@@ -71,7 +62,6 @@ const SettingButton = () => {
   // Alarm volume
   const handleAlarmVolume = (e: ChangeEvent<HTMLInputElement>) => {
     const newAlarmVolume = parseFloat(e.target.value);
-    setAlarmVolume(newAlarmVolume);
     setSettings({
       ...settings,
       alarmVolume: newAlarmVolume,
@@ -80,10 +70,17 @@ const SettingButton = () => {
 
   const handleRepeatNumber = (e: ChangeEvent<HTMLInputElement>) => {
     const newRepeatNumber = parseInt(e.target.value);
-    setRepeatNumber(newRepeatNumber);
     setSettings({
       ...settings, //
       repeatNumber: newRepeatNumber,
+    });
+  };
+
+  const handleRepeatToggle = () => {
+    const newIsContinuous = !settings.isContinuous;
+    setSettings({
+      ...settings,
+      isContinuous: newIsContinuous,
     });
   };
 
@@ -92,7 +89,12 @@ const SettingButton = () => {
       <div className="control-button setting-button" onClick={() => setDialogOpen(true)}>
         <i className={`fa fa-2x fa-gear`}></i>
       </div>
-      <Dialog isOpen={isDialogOpen} onClose={() => setDialogOpen(false)} title="20-20-20 Rule" dialogClassName="settings">
+      <Dialog
+        isOpen={isDialogOpen} //
+        onClose={() => setDialogOpen(false)}
+        title="Settings"
+        dialogClassName="settings"
+      >
         <>
           <div className="settings-wrapper">
             <aside>
@@ -118,17 +120,17 @@ const SettingButton = () => {
                     <input
                       type="text" //
                       id="notificationStartMessage"
-                      value={notificationStartMessage}
+                      value={settings.notificationStartMessage}
                       onChange={handleNotificationStartMessage}
                     />
                   </div>
 
                   <div className="settings-item">
-                    <label htmlFor="notificationMessage">終了時</label>
+                    <label htmlFor="notificationFinishMessage">終了時</label>
                     <input
                       type="text" //
-                      id="notificationMessage"
-                      value={notificationFinishMessage}
+                      id="notificationFinishMessage"
+                      value={settings.notificationFinishMessage}
                       onChange={handleNotificationFinishMessage}
                     />
                   </div>
@@ -138,7 +140,7 @@ const SettingButton = () => {
                     <input
                       type="number" //
                       id="notificationDisplayTime"
-                      value={notificationDisplayTime / 1000}
+                      value={settings.notificationDisplayTime / 1000}
                       onChange={handleNotificationDisplayTime}
                     />
                   </div>
@@ -154,12 +156,15 @@ const SettingButton = () => {
                     </label>
                     <input type="file" id="alarmSound" accept="audio/*" onChange={handleAlarmSound} />
                   </div>
+
+                  <div className="settings-item">{settings.alarmSound}</div>
+
                   <div className="settings-item">
                     <label htmlFor="alarmTime">アラーム時間</label>
                     <input
                       type="number" //
                       id="alarmTime"
-                      value={alarmTime}
+                      value={settings.alarmTime}
                       onChange={handleAlarmTime}
                       max={20}
                       min={1}
@@ -167,11 +172,10 @@ const SettingButton = () => {
                   </div>
                   <div className="settings-item">
                     <label htmlFor="alarmVolume">音量</label>
-                    {/* <input type="number" id="alarmVolume" value={alarmVolume} onChange={handleAlarmVolume} /> */}
                     <input
                       type="number" //
                       id="alarmVolume"
-                      value={alarmVolume}
+                      value={settings.alarmVolume}
                       onChange={handleAlarmVolume}
                       step="0.1"
                       max="1"
@@ -184,14 +188,25 @@ const SettingButton = () => {
               {selectedSettingItem === 'others' && (
                 <>
                   <div className="settings-item">
+                    <label htmlFor="repeatToggle">繰り返し</label>
+                    <button
+                      id="repeatToggle" //
+                      className={`toggle-button ${settings.isContinuous ? 'active' : ''}`}
+                      onClick={handleRepeatToggle}
+                    >
+                      {settings.isContinuous ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+                  <div className="settings-item">
                     <label htmlFor="repeatNumber">繰り返し回数</label>
                     <input
                       type="number" //
                       id="repeatNumber"
-                      value={repeatNumber}
+                      value={settings.repeatNumber}
                       onChange={handleRepeatNumber}
                       max={99}
                       min={1}
+                      disabled={!settings.isContinuous}
                     />
                   </div>
                 </>

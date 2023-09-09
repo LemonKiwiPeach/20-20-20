@@ -16,7 +16,7 @@ import { useLocalStorage } from './useLocalStorage';
 import { useSettings } from './SettingsContext';
 
 const TwentyTwentyTwenty = () => {
-  const { settings } = useSettings();
+  const { settings, setSettings } = useSettings();
   // タイマーの残り時間
   const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.TWENTY_MINUTES);
   const { timerSeconds, setTimerSeconds, initTimer, breakTime, setBreakTime, startTimer, stopTimer, resetTimer, terminateTimer } = useTimer(initialTimerSeconds);
@@ -25,8 +25,8 @@ const TwentyTwentyTwenty = () => {
   // 通知が出たかどうか
   const [notified, setNotified] = useState<boolean>(false);
   // 連続モードがONかOFFか
-  const [initialMode, setStoredMode] = useLocalStorage<boolean>('isContinuousMode', true);
-  const [isContinuousMode, setIsContinuousMode] = useState<boolean>(initialMode);
+  // const [initialMode, setStoredMode] = useLocalStorage<boolean>('isContinuousMode', true);
+  // const [isContinuousMode, setIsContinuousMode] = useState<boolean>(true);
   // 音量
   const [storedVolume, setStoredVolume] = useLocalStorage<number>('volume', settings.alarmVolume);
   const [volume, setVolume] = useState<number>(storedVolume);
@@ -36,17 +36,20 @@ const TwentyTwentyTwenty = () => {
     stopAlarm,
     resetAlarm,
     adjustAlarmVolume,
-  } = useAlarm(volume);
+  } = useAlarm(settings.alarmVolume);
 
   useEffect(() => {
-    setVolume(settings.alarmVolume);
+    setSettings({
+      ...settings, //
+      alarmVolume: settings.alarmVolume,
+    });
   }, [settings.alarmVolume]);
 
   useEffect(() => {
     Notification.requestPermission();
-    if (initialMode) {
-      setIsContinuousMode(initialMode === true);
-    }
+    // if (initialMode) {
+    //   setIsContinuousMode(initialMode === true);
+    // }
   }, []);
 
   useEffect(() => {
@@ -70,10 +73,14 @@ const TwentyTwentyTwenty = () => {
     };
   }, [timerSeconds]);
 
-  useEffect(() => {
-    setStoredMode(isContinuousMode);
-    setStoredVolume(volume);
-  }, [isContinuousMode, volume]);
+  // useEffect(() => {
+  //   setStoredMode(isContinuousMode);
+  //   setStoredVolume(volume);
+  // }, [isContinuousMode, volume]);
+
+  // useEffect(() => {
+  //   setStoredVolume(volume);
+  // }, [volume]);
 
   useEffect(() => {
     // タイマー20分経過してアラームが鳴り始めるとき
@@ -90,7 +97,7 @@ const TwentyTwentyTwenty = () => {
       sendNotification(settings.notificationFinishMessage);
       resetApp();
     }
-  }, [timerSeconds, breakTime, notified, isContinuousMode]);
+  }, [timerSeconds, breakTime, notified, settings.isContinuous]);
 
   useEffect(() => {
     if (isRunning) {
@@ -117,7 +124,10 @@ const TwentyTwentyTwenty = () => {
   };
 
   const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
+    setSettings({
+      ...settings, //
+      alarmVolume: newVolume,
+    });
     adjustAlarmVolume(newVolume);
   };
 
@@ -126,7 +136,7 @@ const TwentyTwentyTwenty = () => {
     setBreakTime(0);
     resetAlarm();
 
-    if (isContinuousMode && isRunning) {
+    if (settings.isContinuous && isRunning) {
       resetTimer();
     } else {
       setIsRunning(false);
@@ -155,7 +165,7 @@ const TwentyTwentyTwenty = () => {
           />
 
           <div className="control-buttons-top">
-            <VolumeControl volume={volume} onVolumeChange={handleVolumeChange} />
+            <VolumeControl onVolumeChange={handleVolumeChange} />
             <InfoButton />
             <SettingButton />
           </div>
@@ -175,8 +185,14 @@ const TwentyTwentyTwenty = () => {
 
             <Tooltip label="20-minute timer ↔ 20-second alarm">
               <ClockButton
-                onClick={() => setIsContinuousMode(!isContinuousMode)} //
-                isToggled={isContinuousMode}
+                onClick={() => {
+                  const newIsContinuous = !settings.isContinuous;
+                  setSettings({
+                    ...settings,
+                    isContinuous: newIsContinuous,
+                  });
+                }}
+                isToggled={settings.isContinuous}
                 icon="fa-refresh"
               />
             </Tooltip>
@@ -200,7 +216,7 @@ const TwentyTwentyTwenty = () => {
             </a>
           </p>
         </div>
-        <audio ref={audioRef} src={process.env.PUBLIC_URL + '/break-music.mp3'} preload="auto"></audio>
+        <audio ref={audioRef} src={process.env.PUBLIC_URL + `/${settings.alarmSound}`} preload="auto"></audio>
       </div>
     </>
   );

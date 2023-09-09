@@ -45,8 +45,8 @@ section {
   color: #333;
 }
 
-.settings-section input[type="file"],
-.settings-section input[type="text"] {
+.settings-section input[type='file'],
+.settings-section input[type='text'] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -75,9 +75,9 @@ section {
 }
 
 /* Add input styles */
-input[type="file"],
-input[type="text"],
-input[type="number"] {
+input[type='file'],
+input[type='text'],
+input[type='number'] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -100,11 +100,25 @@ label {
   border-radius: 4px;
 }
 
-.custom-file-upload:hover {
-  /* background-color: #cfd8ff; */
+/* Hidden File Input */
+input[type='file'] {
+  display: none;
 }
 
-/* Hidden File Input */
-input[type="file"] {
-  display: none;
+.toggle-button {
+  background-color: #b5b5b5;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.toggle-button.active {
+  background-color: #2980b9;
+  color: white;
 }

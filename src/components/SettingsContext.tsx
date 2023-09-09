@@ -1,23 +1,26 @@
 import React, { createContext, useContext, useState } from 'react';
+import { TimerSettings } from '../TimerSettings';
 
 interface Settings {
   notificationStartMessage: string;
   notificationFinishMessage: string;
   notificationDisplayTime: number;
-  alarmSound: File | null;
+  alarmSound: string;
   alarmTime: number;
   alarmVolume: number;
+  isContinuous: boolean;
   repeatNumber: number;
 }
 
 const defaultSettings: Settings = {
-  notificationStartMessage: 'Break start',
-  notificationFinishMessage: 'Break finish',
-  notificationDisplayTime: 5,
-  alarmSound: null,
-  alarmTime: 20,
-  alarmVolume: 0.5,
-  repeatNumber: 10,
+  notificationStartMessage: TimerSettings.NOTIFICATION_BREAK_START,
+  notificationFinishMessage: TimerSettings.NOTIFICATION_BREAK_FINISH,
+  notificationDisplayTime: TimerSettings.NOTIFICATION_DISPLAY_TIME,
+  alarmSound: TimerSettings.ALARM_SOUND,
+  alarmTime: TimerSettings.ALARM_TIME,
+  alarmVolume: TimerSettings.ALARM_VOLUME,
+  isContinuous: TimerSettings.IS_CONTINUOUS,
+  repeatNumber: TimerSettings.REPEAT_NUMBER,
 };
 
 const SettingsContext = createContext<{

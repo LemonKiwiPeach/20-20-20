@@ -29,5 +29,18 @@ export const useAlarm = (volume: number) => {
     }
   }
 
-  return { audioRef, startAlarm, stopAlarm, resetAlarm, adjustAlarmVolume };
+  function setAlarmSound(alarmSound: string) {
+    if (audioRef.current) {
+      audioRef.current.src = alarmSound;
+    }
+  }
+
+  return {
+    audioRef, //
+    startAlarm,
+    stopAlarm,
+    resetAlarm,
+    adjustAlarmVolume,
+    setAlarmSound,
+  };
 };
