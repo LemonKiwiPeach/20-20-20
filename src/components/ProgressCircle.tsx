@@ -6,9 +6,10 @@ interface ProgressCircleProps {
   timerSeconds: number;
   isRunning: boolean;
   alarmTimeInSeconds: number;
+  breakTime: number;
 }
 
-const ProgressCircle: React.FC<ProgressCircleProps> = ({ strokeDashoffset, timerSeconds, isRunning, alarmTimeInSeconds }) => {
+const ProgressCircle: React.FC<ProgressCircleProps> = ({ strokeDashoffset, timerSeconds, isRunning, alarmTimeInSeconds, breakTime }) => {
   return (
     <svg viewBox="0 0 200 200">
       <circle cx="100" cy="100" r="95" fill="#e0e8ff" stroke="#e0e0e0" strokeWidth="10"></circle>
