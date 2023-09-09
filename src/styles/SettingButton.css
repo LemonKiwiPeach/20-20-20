@@ -95,9 +95,9 @@ label {
   display: inline-block;
   padding: 5px 10px;
   cursor: pointer;
-  /* background-color: #e0e8ff; */
   border: 1px solid #ccc;
   border-radius: 4px;
+  text-align: center;
 }
 
 /* Hidden File Input */

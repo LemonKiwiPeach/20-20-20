@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/TwentyTwentyTwenty.css';
-import '../styles/ProgressCircle.css';
 import '../styles/Caption.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { TimerSettings } from '../TimerSettings';
@@ -86,6 +85,7 @@ const TwentyTwentyTwenty = () => {
       if (audioRef && audioRef.current !== null && audioRef.current.currentTime !== undefined) {
         resetAlarm();
       }
+      setSettings({ ...settings, repeatNumber: settings.repeatNumber - 1 });
       sendNotification(settings.notificationFinishMessage);
       resetApp();
     }
@@ -128,7 +128,7 @@ const TwentyTwentyTwenty = () => {
     setBreakTime(0);
     resetAlarm();
 
-    if (settings.isContinuous && isRunning) {
+    if (settings.isContinuous && 1 < settings.repeatNumber && isRunning) {
       resetTimer();
     } else {
       setIsRunning(false);

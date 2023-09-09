@@ -19,7 +19,7 @@ const ClockButton: React.FC<ClockButtonProps> = ({
   return (
     <button onClick={onClick} className={isToggled ? 'toggled' : ''}>
       <i className={`fa ${isToggled && toggledIcon ? toggledIcon : icon}`}></i>
-      {badgeNumber !== undefined && <span className="badge">{badgeNumber}</span>}
+      {badgeNumber !== undefined && badgeNumber !== 0 && <span className="badge">{badgeNumber}</span>}
     </button>
   );
 };
