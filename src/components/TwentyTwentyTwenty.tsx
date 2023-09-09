@@ -12,7 +12,7 @@ import SettingButton from './SettingsButton';
 import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
-import { useSettings } from './SettingsContext';
+import { useSettings, Settings } from './SettingsContext';
 
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
@@ -51,33 +51,29 @@ const TwentyTwentyTwenty = () => {
   }, []);
 
   useEffect(() => {
-    // ページがアンロードされる前に実行されるイベントを追加
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      setInitialTimerSeconds(timerSeconds);
-    };
-
+    const handleBeforeUnload = () => setInitialTimerSeconds(timerSeconds);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [timerSeconds]);
 
   useEffect(() => {
-    // タイマー20分経過してアラームが鳴り始めるとき
-    if (timerSeconds === 0 && breakTime === 0) {
-      sendNotification(settings.notificationStartMessage);
-      startAlarm();
+    if (timerSeconds === 0) {
+      if (breakTime === 0) {
+        sendNotification(settings.notificationStartMessage);
+        startAlarm();
+      } else if (breakTime >= TimerSettings.BREAK_TIME) {
+        resetAlarm();
+        updateSettings({ repeatNumber: settings.repeatNumber - 1 });
+        sendNotification(settings.notificationFinishMessage);
+        resetApp();
+      }
     }
 
-    // タイマー20分経過してアラーム20秒も経過したとき
-    if (timerSeconds === 0 && breakTime >= TimerSettings.BREAK_TIME) {
-      if (audioRef && audioRef.current !== null && audioRef.current.currentTime !== undefined) {
-        resetAlarm();
-      }
-      setSettings({ ...settings, repeatNumber: settings.repeatNumber - 1 });
-      sendNotification(settings.notificationFinishMessage);
-      resetApp();
+    if (settings.repeatNumber <= 0) {
+      updateSettings({ isContinuous: false });
     }
-  }, [timerSeconds, breakTime, notified]);
+  }, [timerSeconds, breakTime, settings.repeatNumber]);
 
   useEffect(() => {
     if (isRunning) {
@@ -118,10 +114,7 @@ const TwentyTwentyTwenty = () => {
 
   const handleContinuousMode = () => {
     const newIsContinuous = !settings.isContinuous;
-    setSettings({
-      ...settings,
-      isContinuous: newIsContinuous,
-    });
+    updateSettings({ isContinuous: newIsContinuous });
   };
 
   const handleResetButton = () => {
@@ -141,6 +134,13 @@ const TwentyTwentyTwenty = () => {
       setNotified(false);
       stopTimer();
     }
+  };
+
+  const updateSettings = (newSettings: Partial<Settings>) => {
+    setSettings({
+      ...settings,
+      ...newSettings,
+    });
   };
 
   const alarmTime = new Date();

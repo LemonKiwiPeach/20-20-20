@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { TimerSettings } from '../TimerSettings';
 
-interface Settings {
+export interface Settings {
   notificationStartMessage: string;
   notificationFinishMessage: string;
   notificationDisplayTime: number;
