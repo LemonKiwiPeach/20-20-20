@@ -49,6 +49,16 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     localStorage.setItem('settings', JSON.stringify(settings));
   }, [settings]);
 
+  useEffect(() => {
+    if (settings.repeatNumber <= 0) {
+      setSettings({
+        ...settings,
+        isContinuous: false,
+        repeatNumber: 10,
+      });
+    }
+  }, [settings.repeatNumber]);
+
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
       {/*  */}

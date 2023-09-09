@@ -39,14 +39,7 @@ const TwentyTwentyTwenty = () => {
     stopAlarm,
     resetAlarm,
     adjustAlarmVolume,
-  } = useAlarm(settings.alarmVolume);
-
-  useEffect(() => {
-    setSettings({
-      ...settings, //
-      alarmVolume: settings.alarmVolume,
-    });
-  }, [settings.alarmVolume]);
+  } = useAlarm();
 
   useEffect(() => {
     Notification.requestPermission();
@@ -54,9 +47,7 @@ const TwentyTwentyTwenty = () => {
 
   useEffect(() => {
     initTimer();
-    return () => {
-      terminateTimer();
-    };
+    return () => terminateTimer();
   }, []);
 
   useEffect(() => {
@@ -67,10 +58,7 @@ const TwentyTwentyTwenty = () => {
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    return () => {
-      // イベントをクリーンアップ
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [timerSeconds]);
 
   useEffect(() => {
@@ -89,7 +77,7 @@ const TwentyTwentyTwenty = () => {
       sendNotification(settings.notificationFinishMessage);
       resetApp();
     }
-  }, [timerSeconds, breakTime, notified, settings.isContinuous]);
+  }, [timerSeconds, breakTime, notified]);
 
   useEffect(() => {
     if (isRunning) {
@@ -121,6 +109,24 @@ const TwentyTwentyTwenty = () => {
       alarmVolume: newVolume,
     });
     adjustAlarmVolume(newVolume);
+  };
+
+  const handleStartAndPause = () => {
+    setIsRunning(!isRunning);
+    breakTime > 0 ? startAlarm() : stopAlarm();
+  };
+
+  const handleContinuousMode = () => {
+    const newIsContinuous = !settings.isContinuous;
+    setSettings({
+      ...settings,
+      isContinuous: newIsContinuous,
+    });
+  };
+
+  const handleResetButton = () => {
+    resetApp();
+    setIsRunning(false);
   };
 
   const resetApp = () => {
@@ -163,39 +169,30 @@ const TwentyTwentyTwenty = () => {
           </div>
 
           <div className="control-buttons-bottom">
+            {/* Start and paue button */}
             <Tooltip label="Start" toggledLabel="Pause" isToggled={isRunning}>
               <ClockButton
-                onClick={() => {
-                  setIsRunning(!isRunning);
-                  breakTime > 0 ? startAlarm() : stopAlarm();
-                }} //
+                onClick={handleStartAndPause} //
                 isToggled={isRunning}
                 icon="fa-play"
                 toggledIcon="fa-pause"
               />
             </Tooltip>
 
+            {/* Continuous button */}
             <Tooltip label="20-minute timer ↔ 20-second alarm">
               <ClockButton
-                onClick={() => {
-                  const newIsContinuous = !settings.isContinuous;
-                  setSettings({
-                    ...settings,
-                    isContinuous: newIsContinuous,
-                  });
-                }}
+                onClick={handleContinuousMode} //
                 isToggled={settings.isContinuous}
                 icon="fa-refresh"
                 badgeNumber={settings.repeatNumber}
               />
             </Tooltip>
 
+            {/* Reset button */}
             <Tooltip label="Reset">
               <ClockButton
-                onClick={() => {
-                  resetApp();
-                  setIsRunning(false);
-                }} //
+                onClick={handleResetButton} //
                 icon="fa-rotate-left"
               />
             </Tooltip>

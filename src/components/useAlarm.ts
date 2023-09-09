@@ -1,12 +1,14 @@
 import { useRef } from 'react';
+import { useSettings } from './SettingsContext';
 
-export const useAlarm = (volume: number) => {
+export const useAlarm = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { settings } = useSettings();
 
   function startAlarm() {
     if (audioRef.current) {
       audioRef.current.play(); // 休憩時間が始まるときに音楽を再生
-      audioRef.current.volume = volume;
+      audioRef.current.volume = settings.alarmVolume;
     }
   }
 
