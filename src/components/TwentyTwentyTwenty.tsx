@@ -19,17 +19,21 @@ const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
   // タイマーの残り時間
   const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.TWENTY_MINUTES);
-  const { timerSeconds, setTimerSeconds, initTimer, breakTime, setBreakTime, startTimer, stopTimer, resetTimer, terminateTimer } = useTimer(initialTimerSeconds);
+  const {
+    timerSeconds, //
+    setTimerSeconds,
+    initTimer,
+    breakTime,
+    setBreakTime,
+    startTimer,
+    stopTimer,
+    resetTimer,
+    terminateTimer,
+  } = useTimer(initialTimerSeconds);
   // アプリが起動中かどうか
   const [isRunning, setIsRunning] = useState<boolean>(false);
   // 通知が出たかどうか
   const [notified, setNotified] = useState<boolean>(false);
-  // 連続モードがONかOFFか
-  // const [initialMode, setStoredMode] = useLocalStorage<boolean>('isContinuousMode', true);
-  // const [isContinuousMode, setIsContinuousMode] = useState<boolean>(true);
-  // 音量
-  const [storedVolume, setStoredVolume] = useLocalStorage<number>('volume', settings.alarmVolume);
-  const [volume, setVolume] = useState<number>(storedVolume);
   const {
     audioRef, //
     startAlarm,
@@ -47,9 +51,6 @@ const TwentyTwentyTwenty = () => {
 
   useEffect(() => {
     Notification.requestPermission();
-    // if (initialMode) {
-    //   setIsContinuousMode(initialMode === true);
-    // }
   }, []);
 
   useEffect(() => {
@@ -72,15 +73,6 @@ const TwentyTwentyTwenty = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [timerSeconds]);
-
-  // useEffect(() => {
-  //   setStoredMode(isContinuousMode);
-  //   setStoredVolume(volume);
-  // }, [isContinuousMode, volume]);
-
-  // useEffect(() => {
-  //   setStoredVolume(volume);
-  // }, [volume]);
 
   useEffect(() => {
     // タイマー20分経過してアラームが鳴り始めるとき
