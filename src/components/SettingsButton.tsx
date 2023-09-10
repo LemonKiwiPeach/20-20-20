@@ -1,16 +1,28 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import '../styles/SettingButton.css';
 import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
 import Dialog from './Dialog';
 import { useSettings } from './SettingsContext';
-import { upsertAudioToIndexedDB } from './dbUtils';
+import { upsertAudioToIndexedDB, fetchAllKeysFromAudioStore } from './dbUtils';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
+  const [IndexedDbkeys, setIndexedDbKeys] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchAllKeysFromAudioStore()
+      .then((fetchedKeys) => {
+        setIndexedDbKeys(fetchedKeys);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error fetching IndexedDbkeys:', error);
+      });
+  }, []);
 
   // Notification start message
   const handleNotificationStartMessage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +91,19 @@ const SettingButton = () => {
     });
   };
 
+  const handleDelete = (index: number) => {
+    const newKeys = [...IndexedDbkeys];
+    newKeys.splice(index, 1);
+    setIndexedDbKeys(newKeys);
+  };
+
+  const handleRadioChange = (selectedKey: string) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      alarmSound: selectedKey,
+    }));
+  };
+
   return (
     <>
       <div className="control-button setting-button" onClick={() => setDialogOpen(true)}>
@@ -106,31 +131,34 @@ const SettingButton = () => {
             <section>
               {selectedSettingItem === 'notification' && (
                 <>
-                  <div className="settings-item">
+                  <div className="settings-container notification-message">
                     <label>通知メッセージ</label>
+                    <div className="settings-item">
+                      <div className="settings-row">
+                        <label htmlFor="notificationStartMessage">開始時</label>
+                        <input
+                          type="text" //
+                          id="notificationStartMessage"
+                          value={settings.notificationStartMessage}
+                          onChange={handleNotificationStartMessage}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="settings-item">
+                      <div className="settings-row">
+                        <label htmlFor="notificationFinishMessage">終了時</label>
+                        <input
+                          type="text" //
+                          id="notificationFinishMessage"
+                          value={settings.notificationFinishMessage}
+                          onChange={handleNotificationFinishMessage}
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="settings-item">
-                    <label htmlFor="notificationStartMessage">開始時</label>
-                    <input
-                      type="text" //
-                      id="notificationStartMessage"
-                      value={settings.notificationStartMessage}
-                      onChange={handleNotificationStartMessage}
-                    />
-                  </div>
-
-                  <div className="settings-item">
-                    <label htmlFor="notificationFinishMessage">終了時</label>
-                    <input
-                      type="text" //
-                      id="notificationFinishMessage"
-                      value={settings.notificationFinishMessage}
-                      onChange={handleNotificationFinishMessage}
-                    />
-                  </div>
-
-                  <div className="settings-item">
+                  <div className="settings-container">
                     <label htmlFor="notificationDisplayTime">表示時間</label>
                     <input
                       type="number" //
@@ -144,19 +172,36 @@ const SettingButton = () => {
 
               {selectedSettingItem === 'alarm' && (
                 <>
-                  <div className="settings-item">
-                    <label>アラーム音</label>
-                    <label htmlFor="alarmSound" className="custom-file-upload">
-                      Choose File
-                    </label>
-                    <input type="file" id="alarmSound" accept="audio/*" onChange={handleAlarmSoundSetting} />
-                    {/* <input type="file" accept="audio/*" onChange={(e) => saveFile(e.target.files[0])} /> */}
+                  <div className="settings-container alarm-sound">
+                    <div className="settings-item alarm-sound-upload">
+                      <label>アラーム音</label>
+                      <label htmlFor="alarmSound" className="custom-file-upload">
+                        Upload File
+                      </label>
+                      <input type="file" id="alarmSound" accept="audio/*" onChange={handleAlarmSoundSetting} />
+                    </div>
+
+                    <div className="settings-item">
+                      {IndexedDbkeys.map((key, index) => (
+                        <div key={index} className="settings-row">
+                          <input
+                            type="radio" //
+                            id={key}
+                            name="settings-radio-group"
+                            checked={settings.alarmSound === key}
+                            onChange={() => handleRadioChange(key)}
+                          />
+                          <label htmlFor={key} className="settings-content">
+                            {key}
+                          </label>
+                          <button onClick={() => handleDelete(index)}>Delete</button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="settings-item">{settings.alarmSound}</div>
-
-                  <div className="settings-item">
-                    <label htmlFor="alarmTime">アラーム時間</label>
+                  <div className="settings-container">
+                    <label htmlFor="alarmTime">アラーム時間(秒)</label>
                     <input
                       type="number" //
                       id="alarmTime"
@@ -166,7 +211,7 @@ const SettingButton = () => {
                       min={1}
                     />
                   </div>
-                  <div className="settings-item">
+                  <div className="settings-container">
                     <label htmlFor="alarmVolume">音量</label>
                     <input
                       type="number" //
@@ -183,7 +228,7 @@ const SettingButton = () => {
 
               {selectedSettingItem === 'others' && (
                 <>
-                  <div className="settings-item">
+                  <div className="settings-container">
                     <label htmlFor="repeatToggle">繰り返し</label>
                     <button
                       id="repeatToggle" //

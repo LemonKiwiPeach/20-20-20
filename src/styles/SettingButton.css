@@ -54,12 +54,64 @@ section {
   box-sizing: border-box;
 }
 
-.settings-item {
+.settings-container {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 0px 16px;
+
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.settings-container.notification-message {
+  flex-direction: column;
+}
+
+.settings-container.notification-message .settings-item {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-container.alarm-sound {
+  flex-direction: column;
+}
+
+.settings-container.alarm-sound .alarm-sound-upload {
+  flex-direction: row;
+  align-items: center;
+}
+
+.settings-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.settings-row > label {
+  padding: 0 0 0 10px;
+}
+
+.settings-row > input[type='radio'] {
+  margin: 0 0 0 10px;
+}
+
+/* 設定項目のメインコンテンツ部分 */
+.settings-content {
+  padding: 0 5px;
+  flex-grow: 1;
 }
 
 /* Add hover effects and cursor style for clickable sections */
@@ -93,7 +145,7 @@ label {
 /* Custom File Upload */
 .custom-file-upload {
   display: inline-block;
-  padding: 5px 10px;
+  padding: 5px 10px !important;
   cursor: pointer;
   border: 1px solid #ccc;
   border-radius: 4px;
