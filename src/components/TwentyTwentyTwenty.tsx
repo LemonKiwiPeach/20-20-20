@@ -84,16 +84,11 @@ const TwentyTwentyTwenty = () => {
         startAlarm();
       } else if (breakTime >= TimerSettings.BREAK_TIME) {
         resetAlarm();
-        updateSettings({ repeatNumber: settings.repeatNumber - 1 });
         sendNotification(settings.notificationFinishMessage);
         resetApp();
       }
     }
-
-    if (settings.repeatNumber <= 0) {
-      updateSettings({ isContinuous: false });
-    }
-  }, [timerSeconds, breakTime, settings.repeatNumber]);
+  }, [timerSeconds, breakTime]);
 
   useEffect(() => {
     if (isRunning) {
@@ -156,7 +151,7 @@ const TwentyTwentyTwenty = () => {
     setBreakTime(0);
     resetAlarm();
 
-    if (settings.isContinuous && 1 < settings.repeatNumber && isRunning) {
+    if (settings.isContinuous && isRunning) {
       resetTimer();
     } else {
       setIsRunning(false);
@@ -214,7 +209,6 @@ const TwentyTwentyTwenty = () => {
                 onClick={handleContinuousModeButton} //
                 isToggled={settings.isContinuous}
                 icon="fa-refresh"
-                badgeNumber={settings.repeatNumber}
               />
             </Tooltip>
 

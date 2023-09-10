@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import '../styles/ClockButton.css';
 
 interface ClockButtonProps {
@@ -6,7 +6,6 @@ interface ClockButtonProps {
   isToggled?: boolean;
   icon?: string;
   toggledIcon?: string;
-  badgeNumber?: number;
 }
 
 const ClockButton: React.FC<ClockButtonProps> = ({
@@ -14,16 +13,10 @@ const ClockButton: React.FC<ClockButtonProps> = ({
   isToggled,
   icon,
   toggledIcon,
-  badgeNumber,
 }) => {
   return (
     <button onClick={onClick} className={isToggled ? 'toggled' : ''}>
       <i className={`fa ${isToggled && toggledIcon ? toggledIcon : icon}`}></i>
-      {isToggled &&
-        badgeNumber !== undefined && //
-        badgeNumber !== 0 && ( //
-          <span className="badge">{badgeNumber}</span>
-        )}
     </button>
   );
 };

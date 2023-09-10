@@ -9,7 +9,6 @@ export interface Settings {
   alarmTime: number;
   alarmVolume: number;
   isContinuous: boolean;
-  repeatNumber: number;
 }
 
 const defaultSettings: Settings = {
@@ -20,7 +19,6 @@ const defaultSettings: Settings = {
   alarmTime: TimerSettings.ALARM_TIME,
   alarmVolume: TimerSettings.ALARM_VOLUME,
   isContinuous: TimerSettings.IS_CONTINUOUS,
-  repeatNumber: TimerSettings.REPEAT_NUMBER,
 };
 
 const SettingsContext = createContext<{
@@ -48,16 +46,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     localStorage.setItem('settings', JSON.stringify(settings));
   }, [settings]);
-
-  useEffect(() => {
-    if (settings.repeatNumber <= 0) {
-      setSettings({
-        ...settings,
-        isContinuous: false,
-        repeatNumber: 10,
-      });
-    }
-  }, [settings.repeatNumber]);
 
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>

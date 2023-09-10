@@ -71,14 +71,6 @@ const SettingButton = () => {
     });
   };
 
-  const handleRepeatNumber = (e: ChangeEvent<HTMLInputElement>) => {
-    const newRepeatNumber = parseInt(e.target.value);
-    setSettings({
-      ...settings, //
-      repeatNumber: newRepeatNumber,
-    });
-  };
-
   const handleRepeatToggle = () => {
     const newIsContinuous = !settings.isContinuous;
     setSettings({
@@ -200,18 +192,6 @@ const SettingButton = () => {
                     >
                       {settings.isContinuous ? 'ON' : 'OFF'}
                     </button>
-                  </div>
-                  <div className="settings-item">
-                    <label htmlFor="repeatNumber">繰り返し回数</label>
-                    <input
-                      type="number" //
-                      id="repeatNumber"
-                      value={settings.repeatNumber}
-                      onChange={handleRepeatNumber}
-                      max={99}
-                      min={1}
-                      disabled={!settings.isContinuous}
-                    />
                   </div>
                 </>
               )}
