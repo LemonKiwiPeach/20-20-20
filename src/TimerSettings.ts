@@ -7,6 +7,7 @@ interface TimerSettings {
   NOTIFICATION_BREAK_FINISH: string;
   NOTIFICATION_DISPLAY_TIME: number;
   ALARM_SOUND: string;
+  ALARM_SOUNDS: string[];
   ALARM_TIME: number;
   ALARM_VOLUME: number;
   IS_CONTINUOUS: boolean;
@@ -22,6 +23,7 @@ export const TimerSettings: TimerSettings = {
   NOTIFICATION_BREAK_FINISH: 'Break time is over!',
   NOTIFICATION_DISPLAY_TIME: 5000,
   ALARM_SOUND: 'break-music.mp3',
+  ALARM_SOUNDS: [],
   ALARM_TIME: 20,
   ALARM_VOLUME: 0.5,
   IS_CONTINUOUS: true,

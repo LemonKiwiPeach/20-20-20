@@ -17,14 +17,29 @@ export const upsertAudioToIndexedDB = async (audioBlob: Blob, audioName: string)
 
     const db = await openDB<AudioDB>('DB-20-20-20', 1, {
       upgrade(db) {
+        console.log('Upgrade event triggered');
         if (!db.objectStoreNames.contains('audio')) {
+          console.log("Creating 'audio' object store");
           db.createObjectStore('audio');
         }
       },
+      blocked() {
+        console.log('Older version still in use.');
+      },
+      blocking() {
+        console.log('Newer version to be used.');
+      },
+      terminated() {
+        console.log('Database terminated.');
+      },
     });
 
-    const tx = db.transaction('audio', 'readwrite');
-    await tx.store.put(audioBlob, audioName);
+    if (db.objectStoreNames.contains('audio')) {
+      const tx = db.transaction('audio', 'readwrite');
+      await tx.store.put(audioBlob, audioName);
+    } else {
+      console.error("The 'audio' object store does not exist.");
+    }
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -57,10 +72,26 @@ export const deleteAudioFromIndexedDB = async (audioName: string): Promise<void>
 export const fetchAllKeysFromAudioStore = async (): Promise<string[]> => {
   let keys: string[] = [];
   try {
-    const db = await openDB<AudioDB>('DB-20-20-20', 1);
-    keys = await db.getAllKeys('audio');
+    const audioExists = await checkIfAudioStoreExists();
+    if (audioExists) {
+      const db = await openDB<AudioDB>('DB-20-20-20', 1);
+      keys = await db.getAllKeys('audio');
+    } else {
+      console.error("The 'audio' object store does not exist.");
+    }
   } catch (error) {
     console.error('An error occurred:', error);
   }
   return keys;
+};
+
+// Check if 'audio' object store exists
+export const checkIfAudioStoreExists = async (): Promise<boolean> => {
+  try {
+    const db = await openDB<AudioDB>('DB-20-20-20', 1);
+    return db.objectStoreNames.contains('audio');
+  } catch (error) {
+    console.error('An error occurred:', error);
+    return false;
+  }
 };

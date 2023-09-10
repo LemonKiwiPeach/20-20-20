@@ -13,7 +13,11 @@ import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
 import { useSettings, Settings } from './SettingsContext';
-import { upsertAudioToIndexedDB } from './dbUtils';
+import {
+  upsertAudioToIndexedDB, //
+  checkIfAudioStoreExists,
+  fetchAllKeysFromAudioStore,
+} from './dbUtils';
 
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
@@ -52,6 +56,25 @@ const TwentyTwentyTwenty = () => {
   }, []);
 
   useEffect(() => {
+    const initializeData = async () => {
+      // 1. デフォルトのアラーム音を登録
+      await registerDefaultAlarmSound();
+
+      // 2. 'audio'テーブル（オブジェクトストア）が存在するか確認
+      const exists = await checkIfAudioStoreExists();
+      if (exists) {
+        try {
+          // 3. IndexedDBから全てのキーを取得
+          const fetchedKeys = await fetchAllKeysFromAudioStore();
+          updateSettings({ alarmSounds: fetchedKeys });
+        } catch (error) {
+          console.error('Error fetching IndexedDb keys:', error);
+        }
+      } else {
+        console.error("The 'audio' object store does not exist.");
+      }
+    };
+
     const registerDefaultAlarmSound = async () => {
       try {
         // Fetch audio file from public folder
@@ -67,7 +90,7 @@ const TwentyTwentyTwenty = () => {
       }
     };
 
-    registerDefaultAlarmSound();
+    initializeData();
   }, []);
 
   useEffect(() => {
@@ -115,10 +138,7 @@ const TwentyTwentyTwenty = () => {
   };
 
   const handleVolumeChange = (newVolume: number) => {
-    setSettings({
-      ...settings, //
-      alarmVolume: newVolume,
-    });
+    updateSettings({ alarmVolume: newVolume });
     adjustAlarmVolume(newVolume);
   };
 
