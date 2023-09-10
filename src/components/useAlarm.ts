@@ -1,27 +1,51 @@
 import { useRef } from 'react';
 import { useSettings } from './SettingsContext';
+import { openDB } from 'idb';
 
 export const useAlarm = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { settings } = useSettings();
 
-  function startAlarm() {
-    if (audioRef.current) {
-      audioRef.current.play(); // 休憩時間が始まるときに音楽を再生
-      audioRef.current.volume = settings.alarmVolume;
+  async function startAlarm() {
+    try {
+      if (audioRef.current) {
+        const db = await openDB('DB-20-20-20', 1);
+        const file = await db.get('audio', settings.alarmSound);
+
+        if (!file) {
+          console.error('File not found in IndexedDB.');
+          return;
+        }
+
+        if (!(file instanceof Blob) && !(file instanceof File)) {
+          console.error('Retrieved item is not a File or Blob.');
+          return;
+        }
+
+        audioRef.current.onerror = () => {
+          console.error('Audio Error:', audioRef.current?.error);
+        };
+
+        const url = URL.createObjectURL(file);
+        audioRef.current.src = url;
+        audioRef.current.play();
+        audioRef.current.volume = settings.alarmVolume;
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
     }
   }
 
   function stopAlarm() {
     if (audioRef.current) {
-      audioRef.current.pause(); // 休憩時間が終わるときに音楽を停止
+      audioRef.current.pause();
     }
   }
 
   function resetAlarm() {
     if (audioRef.current) {
       stopAlarm();
-      audioRef.current.currentTime = 0; // 音楽の再生位置を初めに戻す
+      audioRef.current.currentTime = 0;
     }
   }
 

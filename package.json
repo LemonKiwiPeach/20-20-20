@@ -12,6 +12,7 @@
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "font-awesome": "^4.7.0",
+    "idb": "^7.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",

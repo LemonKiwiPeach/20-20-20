@@ -39,7 +39,7 @@ const SettingButton = () => {
   };
 
   // Alarm sound
-  const handleAlarmSound = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleAlarmSoundSetting = async (e: ChangeEvent<HTMLInputElement>) => {
     const newAlarmSoundFile = e.target.files;
     if (newAlarmSoundFile) {
       const newAlarmSoundName = newAlarmSoundFile[0].name;
@@ -47,6 +47,18 @@ const SettingButton = () => {
         ...settings, //
         alarmSound: newAlarmSoundName,
       });
+
+      // // IndexedDBに音楽ファイルを保存
+      // const saveFile = async (file) => {
+      //   const db = await openDB('MyDatabase', 1, {
+      //     upgrade(db) {
+      //       db.createObjectStore('audio');
+      //     },
+      //   });
+
+      //   const tx = db.transaction('audio', 'readwrite');
+      //   await tx.store.put(file, 'my-audio');
+      // };
     }
   };
 
@@ -154,7 +166,8 @@ const SettingButton = () => {
                     <label htmlFor="alarmSound" className="custom-file-upload">
                       Choose File
                     </label>
-                    <input type="file" id="alarmSound" accept="audio/*" onChange={handleAlarmSound} />
+                    <input type="file" id="alarmSound" accept="audio/*" onChange={handleAlarmSoundSetting} />
+                    {/* <input type="file" accept="audio/*" onChange={(e) => saveFile(e.target.files[0])} /> */}
                   </div>
 
                   <div className="settings-item">{settings.alarmSound}</div>

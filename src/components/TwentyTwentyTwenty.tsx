@@ -13,6 +13,7 @@ import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
 import { useSettings, Settings } from './SettingsContext';
+import { openDB } from 'idb';
 
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
@@ -48,6 +49,43 @@ const TwentyTwentyTwenty = () => {
   useEffect(() => {
     initTimer();
     return () => terminateTimer();
+  }, []);
+
+  useEffect(() => {
+    const registerAlarmSound = async () => {
+      try {
+        // Fetch audio file from public folder
+        const response = await fetch(process.env.PUBLIC_URL + '/break-music.mp3');
+        if (!response.ok) {
+          console.error('Failed to fetch audio file');
+          return;
+        }
+        const audioBlob = await response.blob();
+
+        // Check the blob size in bytes (1KB = 1024 Bytes, 1000KB = 1000 * 1024 Bytes)
+        if (audioBlob.size > 1000 * 1024) {
+          console.error('File size exceeds 1000KB');
+          return;
+        }
+
+        // Open IndexedDB and create an object store
+        const db = await openDB('DB-20-20-20', 1, {
+          upgrade(db) {
+            if (!db.objectStoreNames.contains('audio')) {
+              db.createObjectStore('audio');
+            }
+          },
+        });
+
+        // Write blob to IndexedDB
+        const tx = db.transaction('audio', 'readwrite');
+        await tx.store.put(audioBlob, 'break-music.mp3');
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    };
+
+    registerAlarmSound();
   }, []);
 
   useEffect(() => {
@@ -107,13 +145,12 @@ const TwentyTwentyTwenty = () => {
     adjustAlarmVolume(newVolume);
   };
 
-  const handleStartAndPause = () => {
+  const handleStartAndPauseButton = () => {
     setIsRunning(!isRunning);
-    breakTime > 0 ? startAlarm() : stopAlarm();
     breakTime > 0 && isRunning ? stopAlarm() : startAlarm();
   };
 
-  const handleContinuousMode = () => {
+  const handleContinuousModeButton = () => {
     const newIsContinuous = !settings.isContinuous;
     updateSettings({ isContinuous: newIsContinuous });
   };
@@ -173,7 +210,7 @@ const TwentyTwentyTwenty = () => {
             {/* Start and paue button */}
             <Tooltip label="Start" toggledLabel="Pause" isToggled={isRunning}>
               <ClockButton
-                onClick={handleStartAndPause} //
+                onClick={handleStartAndPauseButton} //
                 isToggled={isRunning}
                 icon="fa-play"
                 toggledIcon="fa-pause"
@@ -183,7 +220,7 @@ const TwentyTwentyTwenty = () => {
             {/* Continuous button */}
             <Tooltip label="20-minute timer ↔ 20-second alarm">
               <ClockButton
-                onClick={handleContinuousMode} //
+                onClick={handleContinuousModeButton} //
                 isToggled={settings.isContinuous}
                 icon="fa-refresh"
                 badgeNumber={settings.repeatNumber}
