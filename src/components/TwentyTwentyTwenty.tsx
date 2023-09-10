@@ -110,6 +110,7 @@ const TwentyTwentyTwenty = () => {
   const handleStartAndPause = () => {
     setIsRunning(!isRunning);
     breakTime > 0 ? startAlarm() : stopAlarm();
+    breakTime > 0 && isRunning ? stopAlarm() : startAlarm();
   };
 
   const handleContinuousMode = () => {
