@@ -13,8 +13,7 @@ import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
 import { useSettings, Settings } from './SettingsContext';
-import { openDB } from 'idb';
-import { saveAudioToIndexedDB } from './dbUtils';
+import { upsertAudioToIndexedDB } from './dbUtils';
 
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
@@ -62,7 +61,7 @@ const TwentyTwentyTwenty = () => {
           return;
         }
         const audioBlob = await response.blob();
-        saveAudioToIndexedDB(audioBlob, 'break-music.mp3');
+        upsertAudioToIndexedDB(audioBlob, 'break-music.mp3');
       } catch (error) {
         console.error('An error occurred:', error);
       }

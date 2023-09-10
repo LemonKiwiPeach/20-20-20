@@ -4,8 +4,7 @@ import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
 import Dialog from './Dialog';
 import { useSettings } from './SettingsContext';
-import { openDB } from 'idb';
-import { saveAudioToIndexedDB } from './dbUtils';
+import { upsertAudioToIndexedDB } from './dbUtils';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
@@ -50,7 +49,7 @@ const SettingButton = () => {
         alarmSound: newAlarmSoundName,
       });
 
-      saveAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
+      upsertAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
     }
   };
 
