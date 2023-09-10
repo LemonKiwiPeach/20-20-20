@@ -14,6 +14,7 @@ import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
 import { useSettings, Settings } from './SettingsContext';
 import { openDB } from 'idb';
+import { saveAudioToIndexedDB } from './dbUtils';
 
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
@@ -37,7 +38,7 @@ const TwentyTwentyTwenty = () => {
   const {
     audioRef, //
     startAlarm,
-    stopAlarm,
+    pauseAlarm,
     resetAlarm,
     adjustAlarmVolume,
   } = useAlarm();
@@ -52,7 +53,7 @@ const TwentyTwentyTwenty = () => {
   }, []);
 
   useEffect(() => {
-    const registerAlarmSound = async () => {
+    const registerDefaultAlarmSound = async () => {
       try {
         // Fetch audio file from public folder
         const response = await fetch(process.env.PUBLIC_URL + '/break-music.mp3');
@@ -61,31 +62,13 @@ const TwentyTwentyTwenty = () => {
           return;
         }
         const audioBlob = await response.blob();
-
-        // Check the blob size in bytes (1KB = 1024 Bytes, 1000KB = 1000 * 1024 Bytes)
-        if (audioBlob.size > 1000 * 1024) {
-          console.error('File size exceeds 1000KB');
-          return;
-        }
-
-        // Open IndexedDB and create an object store
-        const db = await openDB('DB-20-20-20', 1, {
-          upgrade(db) {
-            if (!db.objectStoreNames.contains('audio')) {
-              db.createObjectStore('audio');
-            }
-          },
-        });
-
-        // Write blob to IndexedDB
-        const tx = db.transaction('audio', 'readwrite');
-        await tx.store.put(audioBlob, 'break-music.mp3');
+        saveAudioToIndexedDB(audioBlob, 'break-music.mp3');
       } catch (error) {
         console.error('An error occurred:', error);
       }
     };
 
-    registerAlarmSound();
+    registerDefaultAlarmSound();
   }, []);
 
   useEffect(() => {
@@ -118,7 +101,7 @@ const TwentyTwentyTwenty = () => {
       startTimer(timerSeconds, breakTime);
     } else {
       stopTimer();
-      stopAlarm();
+      pauseAlarm();
     }
   }, [isRunning]);
 
@@ -147,7 +130,16 @@ const TwentyTwentyTwenty = () => {
 
   const handleStartAndPauseButton = () => {
     setIsRunning(!isRunning);
-    breakTime > 0 && isRunning ? stopAlarm() : startAlarm();
+
+    if (timerSeconds === 0) {
+      if (breakTime > 0) {
+        isRunning ? pauseAlarm() : startAlarm();
+      }
+    } else {
+      if (isRunning) {
+        pauseAlarm();
+      }
+    }
   };
 
   const handleContinuousModeButton = () => {

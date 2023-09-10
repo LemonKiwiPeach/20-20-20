@@ -4,6 +4,8 @@ import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
 import Dialog from './Dialog';
 import { useSettings } from './SettingsContext';
+import { openDB } from 'idb';
+import { saveAudioToIndexedDB } from './dbUtils';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
@@ -48,17 +50,7 @@ const SettingButton = () => {
         alarmSound: newAlarmSoundName,
       });
 
-      // // IndexedDBに音楽ファイルを保存
-      // const saveFile = async (file) => {
-      //   const db = await openDB('MyDatabase', 1, {
-      //     upgrade(db) {
-      //       db.createObjectStore('audio');
-      //     },
-      //   });
-
-      //   const tx = db.transaction('audio', 'readwrite');
-      //   await tx.store.put(file, 'my-audio');
-      // };
+      saveAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
     }
   };
 

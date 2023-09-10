@@ -36,7 +36,7 @@ export const useAlarm = () => {
     }
   }
 
-  function stopAlarm() {
+  function pauseAlarm() {
     if (audioRef.current) {
       audioRef.current.pause();
     }
@@ -44,7 +44,7 @@ export const useAlarm = () => {
 
   function resetAlarm() {
     if (audioRef.current) {
-      stopAlarm();
+      pauseAlarm();
       audioRef.current.currentTime = 0;
     }
   }
@@ -64,7 +64,7 @@ export const useAlarm = () => {
   return {
     audioRef, //
     startAlarm,
-    stopAlarm,
+    pauseAlarm,
     resetAlarm,
     adjustAlarmVolume,
     setAlarmSound,
