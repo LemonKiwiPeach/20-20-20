@@ -94,6 +94,27 @@ const TwentyTwentyTwenty = () => {
   }, []);
 
   useEffect(() => {
+    const handleSpacebarPress = (event: KeyboardEvent) => {
+      console.log(event.code);
+      switch (event.code) {
+        case 'Space':
+          handleStartAndPauseButton();
+          break;
+        case 'KeyC':
+          handleContinuousModeButton();
+          break;
+        case 'KeyR':
+          handleResetButton();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleSpacebarPress);
+
+    return () => window.removeEventListener('keydown', handleSpacebarPress);
+  }, [isRunning, settings.isContinuous]);
+
+  useEffect(() => {
     const handleBeforeUnload = () => setInitialTimerSeconds(timerSeconds);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
