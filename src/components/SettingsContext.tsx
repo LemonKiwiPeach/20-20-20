@@ -36,14 +36,10 @@ export const useSettings = () => {
 };
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-
-  useEffect(() => {
+  const [settings, setSettings] = useState<Settings>(() => {
     const savedSettings = localStorage.getItem('settings');
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
-    }
-  }, []);
+    return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+  });
 
   useEffect(() => {
     localStorage.setItem('settings', JSON.stringify(settings));
