@@ -11,7 +11,6 @@ const SettingButton = () => {
   const { settings, setSettings } = useSettings();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
-  // const [alarmSounds, setAlarmSounds] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchAlarmSounds = async () => {
