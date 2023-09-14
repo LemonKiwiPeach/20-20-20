@@ -50,16 +50,18 @@ const SettingButton = () => {
   };
 
   // Alarm sound
-  const handleAlarmSoundSetting = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUploadingAlarmSound = async (e: ChangeEvent<HTMLInputElement>) => {
     const newAlarmSoundFile = e.target.files;
     if (newAlarmSoundFile) {
       const newAlarmSoundName = newAlarmSoundFile[0].name;
+      await upsertAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
+      const newAlarmSounds = [...alarmSounds, newAlarmSoundName];
+
       setSettings({
         ...settings, //
-        alarmSound: newAlarmSoundName,
+        alarmSound: newAlarmSounds[newAlarmSounds.length - 1],
+        alarmSounds: newAlarmSounds,
       });
-
-      upsertAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
     }
   };
 
@@ -93,19 +95,15 @@ const SettingButton = () => {
     const userConfirmed = window.confirm('Are you sure you want to delete this audio?');
 
     if (userConfirmed) {
-      deleteAudioFromIndexedDB(key);
+      const defaultSound = await fetchAllKeysFromAudioStore();
       const newAlarmSounds = [...alarmSounds];
       newAlarmSounds.splice(index, 1);
       setSettings({
         ...settings, //
+        alarmSound: defaultSound[0],
         alarmSounds: newAlarmSounds,
       });
-
-      const defaultSound = await fetchAllKeysFromAudioStore();
-      setSettings((prevSettings) => ({
-        ...prevSettings,
-        alarmSound: defaultSound[0],
-      }));
+      deleteAudioFromIndexedDB(key);
     }
   };
 
@@ -191,7 +189,7 @@ const SettingButton = () => {
                         <label htmlFor="alarmSound" className="custom-file-upload">
                           Upload File
                         </label>
-                        <input type="file" id="alarmSound" accept="audio/*" onChange={handleAlarmSoundSetting} />
+                        <input type="file" id="alarmSound" accept="audio/*" onChange={handleUploadingAlarmSound} />
                       </div>
 
                       <div className="settings-item">
