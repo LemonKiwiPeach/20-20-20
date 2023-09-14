@@ -174,3 +174,38 @@ input[type='file'] {
   background-color: #2980b9;
   color: white;
 }
+
+.message-box {
+  position: fixed;
+  top: -100%;
+  right: 10px;
+  z-index: 2000;
+  border-radius: 8px;
+  background: #3498db;
+  padding: 10px;
+  opacity: 0;
+}
+
+@keyframes slideDownThenUp {
+  0% {
+    top: -100%;
+    opacity: 0;
+  }
+  15%,
+  55% {
+    top: 10px;
+    opacity: 1;
+  }
+  70% {
+    top: 15px;
+    opacity: 1;
+  }
+  100% {
+    top: -100%;
+    opacity: 0;
+  }
+}
+
+.message-box.show {
+  animation: slideDownThenUp 3s ease-out forwards;
+}

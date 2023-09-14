@@ -3,13 +3,16 @@ import '../styles/SettingButton.css';
 import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
 import Dialog from './Dialog';
-import { useSettings } from './SettingsContext';
+import { useSettings, Settings } from './SettingsContext';
 import { fetchAllKeysFromAudioStore, deleteAudioFromIndexedDB, upsertAudioToIndexedDB } from './dbUtils';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
+  const [isMessageBoxVisible, setMessageBoxVisible] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [prevSettings, setPrevSettings] = useState<Settings | null>(null);
 
   useEffect(() => {
     const fetchAlarmSounds = async () => {
@@ -19,6 +22,25 @@ const SettingButton = () => {
 
     fetchAlarmSounds();
   }, []);
+
+  useEffect(() => {
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
+      setPrevSettings(settings);
+    } else {
+      if (JSON.stringify(prevSettings) !== JSON.stringify(settings)) {
+        showMessageBox();
+      }
+      setPrevSettings(settings);
+    }
+  }, [settings]);
+
+  const showMessageBox = () => {
+    setMessageBoxVisible(true);
+    setTimeout(() => {
+      setMessageBoxVisible(false);
+    }, 3000);
+  };
 
   const updateSettings = (key: string, value: any) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -61,6 +83,9 @@ const SettingButton = () => {
 
   return (
     <>
+      {isMessageBoxVisible && ( //
+        <div className={`message-box ${isMessageBoxVisible ? 'show' : ''}`}>設定が変更されました。</div>
+      )}
       <div className="control-button setting-button" onClick={() => setDialogOpen(true)}>
         <i className={`fa fa-2x fa-gear`}></i>
       </div>
