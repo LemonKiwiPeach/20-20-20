@@ -4,8 +4,7 @@ import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
 import Dialog from './Dialog';
 import { useSettings } from './SettingsContext';
-import { upsertAudioToIndexedDB } from './dbUtils';
-import { fetchAllKeysFromAudioStore, deleteAudioFromIndexedDB } from './dbUtils';
+import { fetchAllKeysFromAudioStore, deleteAudioFromIndexedDB, upsertAudioToIndexedDB } from './dbUtils';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
@@ -15,106 +14,49 @@ const SettingButton = () => {
   useEffect(() => {
     const fetchAlarmSounds = async () => {
       const initialAlarmSounds = await fetchAllKeysFromAudioStore();
-      setSettings({
-        ...settings, //
-        alarmSounds: initialAlarmSounds,
-      });
+      updateSettings('alarmSounds', initialAlarmSounds);
     };
 
     fetchAlarmSounds();
   }, []);
 
-  // Notification start message
-  const handleNotificationStartMessage = (e: ChangeEvent<HTMLInputElement>) => {
-    const newNotificationMessage = e.target.value;
-    setSettings({
-      ...settings,
-      notificationStartMessage: newNotificationMessage,
-    });
+  const updateSettings = (key: string, value: any) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  // Notification finish message
-  const handleNotificationFinishMessage = (e: ChangeEvent<HTMLInputElement>) => {
-    const newNotificationMessage = e.target.value;
-    setSettings({
-      ...settings,
-      notificationFinishMessage: newNotificationMessage,
-    });
-  };
-
-  // Notification display time
-  const handleNotificationDisplayTime = (e: ChangeEvent<HTMLInputElement>) => {
-    const newNotificationDisplayTime = parseInt(e.target.value) * 1000;
-    setSettings({
-      ...settings,
-      notificationDisplayTime: newNotificationDisplayTime,
-    });
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>, key: string, multiplier = 1) => {
+    updateSettings(key, e.target.valueAsNumber ? e.target.valueAsNumber * multiplier : e.target.value);
   };
 
   // Alarm sound
   const handleUploadingAlarmSound = async (e: ChangeEvent<HTMLInputElement>) => {
-    const newAlarmSoundFile = e.target.files;
-    if (newAlarmSoundFile) {
-      const newAlarmSoundName = newAlarmSoundFile[0].name;
-      await upsertAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
-      const newAlarmSounds = [...settings.alarmSounds, newAlarmSoundName];
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      setSettings({
-        ...settings, //
-        alarmSound: newAlarmSounds[newAlarmSounds.length - 1],
-        alarmSounds: newAlarmSounds,
-      });
-    }
-  };
-
-  // Alarm time
-  const handleAlarmTime = (e: ChangeEvent<HTMLInputElement>) => {
-    const newAlarmTime = parseInt(e.target.value);
-    setSettings({
-      ...settings, //
-      alarmTime: newAlarmTime,
-    });
-  };
-
-  // Alarm volume
-  const handleAlarmVolume = (e: ChangeEvent<HTMLInputElement>) => {
-    const newAlarmVolume = parseFloat(e.target.value);
-    setSettings({
-      ...settings,
-      alarmVolume: newAlarmVolume,
-    });
+    const fileName = file.name;
+    await upsertAudioToIndexedDB(file, fileName);
+    const newAlarmSounds = [...settings.alarmSounds, fileName];
+    updateSettings('alarmSounds', newAlarmSounds);
+    updateSettings('alarmSound', fileName);
   };
 
   const handleRepeatToggle = () => {
     const newIsContinuous = !settings.isContinuous;
-    setSettings({
-      ...settings,
-      isContinuous: newIsContinuous,
-    });
+    updateSettings('isContinuous', newIsContinuous);
   };
 
   const handleDeleteAlarmSound = async (key: string, index: number) => {
-    const userConfirmed = window.confirm('Are you sure you want to delete this audio?');
-
-    if (userConfirmed) {
-      const allAlarmSound = await fetchAllKeysFromAudioStore();
-      const defaultSound = allAlarmSound[allAlarmSound.length - 1];
+    if (window.confirm('Are you sure you want to delete this audio?')) {
+      await deleteAudioFromIndexedDB(key);
       const newAlarmSounds = [...settings.alarmSounds];
       newAlarmSounds.splice(index, 1);
-      setSettings({
-        ...settings, //
-        alarmSound: defaultSound,
-        alarmSounds: newAlarmSounds,
-      });
-      deleteAudioFromIndexedDB(key);
+      updateSettings('alarmSounds', newAlarmSounds);
+      updateSettings('alarmSound', newAlarmSounds[newAlarmSounds.length - 1] || '');
     }
   };
 
   const handleRadioChange = (selectedKey: string) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      alarmSound: selectedKey,
-    }));
+    updateSettings('alarmSound', selectedKey);
   };
 
   return (
@@ -154,7 +96,7 @@ const SettingButton = () => {
                             type="text" //
                             id="notificationStartMessage"
                             value={settings.notificationStartMessage}
-                            onChange={handleNotificationStartMessage}
+                            onChange={(e) => handleInputChange(e, 'notificationStartMessage')}
                           />
                         </div>
                       </div>
@@ -166,7 +108,7 @@ const SettingButton = () => {
                             type="text" //
                             id="notificationFinishMessage"
                             value={settings.notificationFinishMessage}
-                            onChange={handleNotificationFinishMessage}
+                            onChange={(e) => handleInputChange(e, 'notificationFinishMessage')}
                           />
                         </div>
                       </div>
@@ -178,7 +120,7 @@ const SettingButton = () => {
                         type="number" //
                         id="notificationDisplayTime"
                         value={settings.notificationDisplayTime / 1000}
-                        onChange={handleNotificationDisplayTime}
+                        onChange={(e) => handleInputChange(e, 'notificationDisplayTime', 1000)}
                       />
                     </div>
                   </>
@@ -220,7 +162,7 @@ const SettingButton = () => {
                         type="number" //
                         id="alarmTime"
                         value={settings.alarmTime}
-                        onChange={handleAlarmTime}
+                        onChange={(e) => handleInputChange(e, 'alarmTime')}
                         max={20}
                         min={1}
                       />
@@ -231,7 +173,7 @@ const SettingButton = () => {
                         type="number" //
                         id="alarmVolume"
                         value={settings.alarmVolume}
-                        onChange={handleAlarmVolume}
+                        onChange={(e) => handleInputChange(e, 'alarmVolume')}
                         step="0.1"
                         max="1"
                         min="0"
