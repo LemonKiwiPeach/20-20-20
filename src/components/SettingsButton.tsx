@@ -1,17 +1,26 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import '../styles/SettingButton.css';
 import '../styles/Dialog.css';
 import '../styles/ControlButton.css';
 import Dialog from './Dialog';
 import { useSettings } from './SettingsContext';
 import { upsertAudioToIndexedDB } from './dbUtils';
+import { fetchAllKeysFromAudioStore, deleteAudioFromIndexedDB } from './dbUtils';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
-
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
-  const [IndexedDbkeys, setIndexedDbKeys] = useState<string[]>([]);
+  const [alarmSounds, setAlarmSounds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchAlarmSounds = async () => {
+      const initialAlarmSounds = await fetchAllKeysFromAudioStore();
+      setAlarmSounds(initialAlarmSounds);
+    };
+
+    fetchAlarmSounds();
+  }, []);
 
   // Notification start message
   const handleNotificationStartMessage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,13 +89,24 @@ const SettingButton = () => {
     });
   };
 
-  const handleDelete = (index: number) => {
-    const newKeys = [...IndexedDbkeys];
-    newKeys.splice(index, 1);
-    setSettings({
-      ...settings, //
-      alarmSounds: newKeys,
-    });
+  const handleDelete = async (key: string, index: number) => {
+    const userConfirmed = window.confirm('Are you sure you want to delete this audio?');
+
+    if (userConfirmed) {
+      deleteAudioFromIndexedDB(key);
+      const newAlarmSounds = [...alarmSounds];
+      newAlarmSounds.splice(index, 1);
+      setSettings({
+        ...settings, //
+        alarmSounds: newAlarmSounds,
+      });
+
+      const defaultSound = await fetchAllKeysFromAudioStore();
+      setSettings((prevSettings) => ({
+        ...prevSettings,
+        alarmSound: defaultSound[0],
+      }));
+    }
   };
 
   const handleRadioChange = (selectedKey: string) => {
@@ -187,7 +207,7 @@ const SettingButton = () => {
                             <label htmlFor={key} className="settings-content">
                               {key}
                             </label>
-                            <button onClick={() => handleDelete(index)}>Delete</button>
+                            <button onClick={() => handleDelete(key, index)}>Delete</button>
                           </div>
                         ))}
                       </div>
