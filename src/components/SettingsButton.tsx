@@ -11,12 +11,15 @@ const SettingButton = () => {
   const { settings, setSettings } = useSettings();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
-  const [alarmSounds, setAlarmSounds] = useState<string[]>([]);
+  // const [alarmSounds, setAlarmSounds] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchAlarmSounds = async () => {
       const initialAlarmSounds = await fetchAllKeysFromAudioStore();
-      setAlarmSounds(initialAlarmSounds);
+      setSettings({
+        ...settings, //
+        alarmSounds: initialAlarmSounds,
+      });
     };
 
     fetchAlarmSounds();
@@ -55,7 +58,7 @@ const SettingButton = () => {
     if (newAlarmSoundFile) {
       const newAlarmSoundName = newAlarmSoundFile[0].name;
       await upsertAudioToIndexedDB(newAlarmSoundFile[0], newAlarmSoundName);
-      const newAlarmSounds = [...alarmSounds, newAlarmSoundName];
+      const newAlarmSounds = [...settings.alarmSounds, newAlarmSoundName];
 
       setSettings({
         ...settings, //
@@ -91,16 +94,17 @@ const SettingButton = () => {
     });
   };
 
-  const handleDelete = async (key: string, index: number) => {
+  const handleDeleteAlarmSound = async (key: string, index: number) => {
     const userConfirmed = window.confirm('Are you sure you want to delete this audio?');
 
     if (userConfirmed) {
-      const defaultSound = await fetchAllKeysFromAudioStore();
-      const newAlarmSounds = [...alarmSounds];
+      const allAlarmSound = await fetchAllKeysFromAudioStore();
+      const defaultSound = allAlarmSound[allAlarmSound.length - 1];
+      const newAlarmSounds = [...settings.alarmSounds];
       newAlarmSounds.splice(index, 1);
       setSettings({
         ...settings, //
-        alarmSound: defaultSound[0],
+        alarmSound: defaultSound,
         alarmSounds: newAlarmSounds,
       });
       deleteAudioFromIndexedDB(key);
@@ -205,7 +209,7 @@ const SettingButton = () => {
                             <label htmlFor={key} className="settings-content">
                               {key}
                             </label>
-                            <button onClick={() => handleDelete(key, index)}>Delete</button>
+                            <button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</button>
                           </div>
                         ))}
                       </div>
