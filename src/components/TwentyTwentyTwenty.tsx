@@ -1,54 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import {
-  CircleProgressContainer, //
-  ControlButtonsTop,
-  ControlButtonsBottom,
-  TwentyTwentyTwentyStyled,
-} from '../styles/TwentyTwentyTwentyStyledComponents';
-import 'font-awesome/css/font-awesome.min.css';
-import { TimerSettings } from '../TimerSettings';
+// Components
 import InfoButton from './InfoButton';
 import VolumeControl from './VolumeControl';
 import ClockButton from './ClockButton';
 import Tooltip from './Tooltip';
 import ProgressCircle from './ProgressCircle';
 import SettingButton from './SettingsButton';
+
+// Styles
+import { CircleProgressContainer, ControlButtonsTop, ControlButtonsBottom, TwentyTwentyTwentyStyled } from '../styles/TwentyTwentyTwentyStyledComponents';
+import 'font-awesome/css/font-awesome.min.css';
+
+// Settings
+import { TimerSettings } from '../TimerSettings';
+
+// Custom hooks
 import { useTimer } from './useTimer';
 import { useAlarm } from './useAlarm';
 import { useLocalStorage } from './useLocalStorage';
 import { useSettings, Settings } from './SettingsContext';
-import {
-  upsertAudioToIndexedDB, //
-  checkIfAudioStoreExists,
-  fetchAllKeysFromAudioStore,
-} from './dbUtils';
+
+// IndexedDB
+import { upsertAudioToIndexedDB, checkIfAudioStoreExists, fetchAllKeysFromAudioStore } from './dbUtils';
 
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
   // タイマーの残り時間
-  const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.TWENTY_MINUTES);
-  const {
-    timerSeconds, //
-    setTimerSeconds,
-    initTimer,
-    breakTime,
-    setBreakTime,
-    startTimer,
-    stopTimer,
-    resetTimer,
-    terminateTimer,
-  } = useTimer(initialTimerSeconds);
+  const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.REMAINING_TIMER_SECONDS);
+  const { timerSeconds, setTimerSeconds, initTimer, breakTime, setBreakTime, startTimer, stopTimer, resetTimer, terminateTimer } = useTimer(initialTimerSeconds);
   // アプリが起動中かどうか
   const [isRunning, setIsRunning] = useState<boolean>(false);
   // 通知が出たかどうか
   const [notified, setNotified] = useState<boolean>(false);
-  const {
-    audioRef, //
-    startAlarm,
-    pauseAlarm,
-    resetAlarm,
-    adjustAlarmVolume,
-  } = useAlarm();
+  const { audioRef, startAlarm, pauseAlarm, resetAlarm, adjustAlarmVolume } = useAlarm();
 
   useEffect(() => {
     Notification.requestPermission();
@@ -59,6 +43,7 @@ const TwentyTwentyTwenty = () => {
     return () => terminateTimer();
   }, []);
 
+  // IndexedDB init
   useEffect(() => {
     const initializeData = async () => {
       // 1. デフォルトのアラーム音を登録
@@ -97,6 +82,7 @@ const TwentyTwentyTwenty = () => {
     initializeData();
   }, []);
 
+  // Shortcut key
   useEffect(() => {
     const handleSpacebarPress = (event: KeyboardEvent) => {
       switch (event.code) {
@@ -117,13 +103,15 @@ const TwentyTwentyTwenty = () => {
     return () => window.removeEventListener('keydown', handleSpacebarPress);
   }, [isRunning, settings.isContinuous]);
 
+  // Before reloading event
   useEffect(() => {
     const handleBeforeUnload = () => setInitialTimerSeconds(timerSeconds);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [timerSeconds]);
+  }, []);
 
+  // Timer time checker
   useEffect(() => {
     if (timerSeconds === 0) {
       if (breakTime === 0) {
@@ -146,12 +134,7 @@ const TwentyTwentyTwenty = () => {
     }
   }, [isRunning]);
 
-  const progress =
-    timerSeconds > 0 //
-      ? ((TimerSettings.TWENTY_MINUTES - timerSeconds) / TimerSettings.TWENTY_MINUTES) * TimerSettings.STROKE_LENGTH
-      : ((TimerSettings.BREAK_TIME - breakTime) / TimerSettings.BREAK_TIME) * TimerSettings.STROKE_LENGTH;
-  const strokeDashoffset = TimerSettings.STROKE_LENGTH - progress;
-
+  // Notification
   const sendNotification = (message: string) => {
     if (Notification.permission === 'granted' && !notified) {
       const notification = new Notification(message);
@@ -161,11 +144,13 @@ const TwentyTwentyTwenty = () => {
     }
   };
 
+  // Alarm volume
   const handleVolumeChange = (newVolume: number) => {
     updateSettings({ alarmVolume: newVolume });
     adjustAlarmVolume(newVolume);
   };
 
+  // Start/pause button
   const handleStartAndPauseButton = () => {
     setIsRunning(!isRunning);
 
@@ -180,16 +165,19 @@ const TwentyTwentyTwenty = () => {
     }
   };
 
+  // Continuous mode button
   const handleContinuousModeButton = () => {
     const newIsContinuous = !settings.isContinuous;
     updateSettings({ isContinuous: newIsContinuous });
   };
 
+  // Reset button
   const handleResetButton = () => {
     resetApp();
     setIsRunning(false);
   };
 
+  // App reset button
   const resetApp = () => {
     setTimerSeconds(TimerSettings.TWENTY_MINUTES);
     setBreakTime(0);
@@ -204,6 +192,7 @@ const TwentyTwentyTwenty = () => {
     }
   };
 
+  // Settings value update
   const updateSettings = (newSettings: Partial<Settings>) => {
     setSettings({
       ...settings,
@@ -211,24 +200,11 @@ const TwentyTwentyTwenty = () => {
     });
   };
 
-  const alarmTime = new Date();
-  const alarmTimeInSeconds =
-    alarmTime.getHours() * 3600 + //
-    alarmTime.getMinutes() * 60 +
-    alarmTime.getSeconds() +
-    timerSeconds;
-
   return (
     <>
       <TwentyTwentyTwentyStyled className="twenty-tweny-twenty">
         <CircleProgressContainer>
-          <ProgressCircle
-            strokeDashoffset={strokeDashoffset} //
-            timerSeconds={timerSeconds}
-            isRunning={isRunning}
-            alarmTimeInSeconds={alarmTimeInSeconds}
-            breakTime={breakTime}
-          />
+          <ProgressCircle timerSeconds={timerSeconds} isRunning={isRunning} breakTime={breakTime} />
 
           <ControlButtonsTop>
             <VolumeControl onVolumeChange={handleVolumeChange} />

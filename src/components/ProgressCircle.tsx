@@ -1,15 +1,28 @@
 import React from 'react';
 import { ProgressCircleStyled } from '../styles/ProgressCircleStyledComponents';
+// Settings
+import { TimerSettings } from '../TimerSettings';
 
 interface ProgressCircleProps {
-  strokeDashoffset: number;
   timerSeconds: number;
   isRunning: boolean;
-  alarmTimeInSeconds: number;
   breakTime: number;
 }
 
-const ProgressCircle: React.FC<ProgressCircleProps> = ({ strokeDashoffset, timerSeconds, isRunning, alarmTimeInSeconds, breakTime }) => {
+const ProgressCircle: React.FC<ProgressCircleProps> = ({ timerSeconds, isRunning, breakTime }) => {
+  // Progress circle strokeDashoffset
+  const progress =
+    timerSeconds > 0
+      ? // timer mode
+        ((TimerSettings.TWENTY_MINUTES - timerSeconds) / TimerSettings.TWENTY_MINUTES) * TimerSettings.STROKE_LENGTH
+      : // Alarm mode
+        ((TimerSettings.BREAK_TIME - breakTime) / TimerSettings.BREAK_TIME) * TimerSettings.STROKE_LENGTH;
+  const strokeDashoffset = TimerSettings.STROKE_LENGTH - progress;
+
+  // Alarm time
+  const alarmTime = new Date();
+  const alarmTimeInSeconds = alarmTime.getHours() * 3600 + alarmTime.getMinutes() * 60 + alarmTime.getSeconds() + timerSeconds;
+
   return (
     <svg viewBox="0 0 200 200">
       <circle cx="100" cy="100" r="95" fill="#e0e8ff" stroke="#e0e0e0" strokeWidth="10"></circle>
