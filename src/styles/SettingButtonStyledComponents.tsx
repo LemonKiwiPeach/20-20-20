@@ -144,3 +144,24 @@ export const MessageBox = styled.div`
     }
   }
 `;
+
+export const Caption = styled.div`
+  font-size: 6px;
+  text-align: right;
+  color: #888;
+  width: 100%;
+  pointer-events: auto;
+
+  @media (max-width: 768px) {
+    bottom: 1%;
+  }
+
+  a {
+    color: #3498db;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;

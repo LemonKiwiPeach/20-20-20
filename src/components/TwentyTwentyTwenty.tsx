@@ -262,13 +262,6 @@ const TwentyTwentyTwenty = () => {
             </Tooltip>
           </div>
 
-          <p className="caption">
-            Sound from
-            <br />
-            <a href="https://www.zapsplat.com" target="_blank" rel="noopener noreferrer">
-              Zapsplat.com
-            </a>
-          </p>
         </div>
         <audio ref={audioRef} src={process.env.PUBLIC_URL + `/${settings.alarmSound}`} preload="auto"></audio>
       </div>

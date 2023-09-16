@@ -16,6 +16,7 @@ import {
   DefaultFileUpload,
   ToggleButton,
   MessageBox,
+  Caption,
 } from '../styles/SettingButtonStyledComponents';
 
 const SettingButton = () => {
@@ -185,6 +186,13 @@ const SettingButton = () => {
                           <button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</button>
                         </SettingsRow>
                       ))}
+
+                      <Caption>
+                        Sound from{' '}
+                        <a href="https://www.zapsplat.com" target="_blank" rel="noopener noreferrer">
+                          Zapsplat.com
+                        </a>
+                      </Caption>
                     </SettingsWrapper>
 
                     <SettingsWrapper>
