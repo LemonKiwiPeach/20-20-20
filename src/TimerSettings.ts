@@ -25,7 +25,7 @@ export const TimerSettings: TimerSettings = {
   ALARM_SOUND: 'break-music.mp3',
   ALARM_SOUNDS: [],
   ALARM_TIME: 20,
-  ALARM_VOLUME: 0.5,
+  ALARM_VOLUME: 0.1,
   IS_CONTINUOUS: true,
   REPEAT_NUMBER: 10,
 };
