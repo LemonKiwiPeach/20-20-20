@@ -26,7 +26,7 @@ import { upsertAudioToIndexedDB, checkIfAudioStoreExists, fetchAllKeysFromAudioS
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
   // タイマーの残り時間
-  const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.REMAINING_TIMER_SECONDS);
+  const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.TWENTY_MINUTES);
   const { timerSeconds, setTimerSeconds, initTimer, breakTime, setBreakTime, startTimer, stopTimer, resetTimer, terminateTimer } = useTimer(initialTimerSeconds);
   // アプリが起動中かどうか
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -67,13 +67,13 @@ const TwentyTwentyTwenty = () => {
     const registerDefaultAlarmSound = async () => {
       try {
         // Fetch audio file from public folder
-        const response = await fetch(process.env.PUBLIC_URL + '/break-music.mp3');
+        const response = await fetch(process.env.PUBLIC_URL + '/default-alarm-sound.mp3');
         if (!response.ok) {
           console.error('Failed to fetch audio file');
           return;
         }
         const audioBlob = await response.blob();
-        upsertAudioToIndexedDB(audioBlob, 'break-music.mp3');
+        upsertAudioToIndexedDB(audioBlob, 'default-alarm-sound.mp3');
       } catch (error) {
         console.error('An error occurred:', error);
       }
@@ -82,7 +82,7 @@ const TwentyTwentyTwenty = () => {
     initializeData();
   }, []);
 
-  // Shortcut key
+  // Event handlers
   useEffect(() => {
     const handleSpacebarPress = (event: KeyboardEvent) => {
       switch (event.code) {
@@ -93,23 +93,25 @@ const TwentyTwentyTwenty = () => {
           handleContinuousModeButton();
           break;
         case 'KeyR':
-          handleResetButton();
+          if (!event.ctrlKey) {
+            handleResetButton();
+          }
           break;
       }
     };
 
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      setInitialTimerSeconds(timerSeconds);
+    };
+
     window.addEventListener('keydown', handleSpacebarPress);
-
-    return () => window.removeEventListener('keydown', handleSpacebarPress);
-  }, [isRunning, settings.isContinuous]);
-
-  // Before reloading event
-  useEffect(() => {
-    const handleBeforeUnload = () => setInitialTimerSeconds(timerSeconds);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, []);
+    return () => {
+      window.removeEventListener('keydown', handleSpacebarPress);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isRunning, settings.isContinuous, timerSeconds]);
 
   // Timer time checker
   useEffect(() => {
