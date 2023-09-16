@@ -108,33 +108,33 @@ const SettingButton = () => {
                   className={selectedSettingItem === 'notification' ? 'selected' : ''} //
                   onClick={() => setSelectedSettingItem('notification')}
                 >
-                  通知
+                  Notification
                 </SettingsSection>
                 <SettingsSection
                   className={selectedSettingItem === 'alarm' ? 'selected' : ''} //
                   onClick={() => setSelectedSettingItem('alarm')}
                 >
-                  アラーム
+                  Alarm
                 </SettingsSection>
                 <SettingsSection
                   className={selectedSettingItem === 'others' ? 'selected' : ''} //
                   onClick={() => setSelectedSettingItem('others')}
                 >
-                  その他
+                  Others
                 </SettingsSection>
               </Aside>
               <Section>
                 {selectedSettingItem === 'notification' && (
                   <>
                     <SettingsWrapper className="notification-message">
-                      <Label>通知メッセージ</Label>
+                      <Label>Notification messages</Label>
                       <SettingsRow>
-                        <Label htmlFor="notificationStartMessage">開始時</Label>
+                        <Label htmlFor="notificationStartMessage">At alarm start</Label>
                         <Input type="text" id="notificationStartMessage" value={settings.notificationStartMessage} onChange={(e) => handleInputChange(e, 'notificationStartMessage')} />
                       </SettingsRow>
 
                       <SettingsRow>
-                        <Label htmlFor="notificationFinishMessage">終了時</Label>
+                        <Label htmlFor="notificationFinishMessage">At alarm end</Label>
                         <Input
                           type="text" //
                           id="notificationFinishMessage"
@@ -146,7 +146,7 @@ const SettingButton = () => {
 
                     <SettingsWrapper>
                       <SettingsRow>
-                        <Label htmlFor="notificationDisplayTime">表示時間(秒)</Label>
+                        <Label htmlFor="notificationDisplayTime">Display time (seconds)</Label>
                         <Input
                           type="number" //
                           id="notificationDisplayTime"
@@ -162,7 +162,7 @@ const SettingButton = () => {
                   <>
                     <SettingsWrapper>
                       <SettingsRow>
-                        <Label htmlFor="alarmSound">アラーム音</Label>
+                        <Label htmlFor="alarmSound">Alarm sound</Label>
                         <CustomFileUpload htmlFor="alarmSound">Upload File</CustomFileUpload>
                         <DefaultFileUpload
                           type="file" //
@@ -196,7 +196,7 @@ const SettingButton = () => {
 
                     <SettingsWrapper>
                       <SettingsRow>
-                        <Label htmlFor="alarmTime">アラーム時間(秒)</Label>
+                        <Label htmlFor="alarmTime">Alarm time (seconds)</Label>
                         <Input
                           type="number" //
                           id="alarmTime"
@@ -210,7 +210,7 @@ const SettingButton = () => {
 
                     <SettingsWrapper>
                       <SettingsRow>
-                        <Label htmlFor="alarmVolume">音量</Label>
+                        <Label htmlFor="alarmVolume">Volume</Label>
                         <Input
                           type="number" //
                           id="alarmVolume"
@@ -229,7 +229,7 @@ const SettingButton = () => {
                   <>
                     <SettingsWrapper>
                       <SettingsRow>
-                        <Label htmlFor="repeatToggle">繰り返し</Label>
+                        <Label htmlFor="repeatToggle">Repeat mode</Label>
                         <ToggleButton id="repeatToggle" onClick={handleRepeatToggle}>
                           {settings.isContinuous ? 'ON' : 'OFF'}
                         </ToggleButton>
