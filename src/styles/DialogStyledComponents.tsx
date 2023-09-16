@@ -1,5 +1,6 @@
-/* Dialog Overlay */
-.dialog-overlay {
+import styled from 'styled-components';
+
+export const DialogOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -10,10 +11,9 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-}
+`;
 
-/* Dialog Content */
-.dialog-content {
+export const DialogContent = styled.div`
   position: relative;
   background-color: #fff;
   padding: 24px;
@@ -21,10 +21,9 @@
   width: 90%;
   max-width: 500px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
+`;
 
-/* Close Button */
-.close-button {
+export const CloseButton = styled.div`
   position: absolute;
   top: 10px;
   right: 10px;
@@ -33,29 +32,11 @@
   cursor: pointer;
   border: none;
   background: none;
-}
+`;
 
-/* Title */
-h2 {
+export const Title = styled.h2`
   margin-top: 0;
   margin-bottom: 16px;
   color: #333;
   font-size: 24px;
-}
-
-/* Rule List */
-ul {
-  list-style: disc;
-  margin-left: 1em;
-}
-
-/* Rule List Items */
-li {
-  margin: 8px 0;
-}
-
-/* Description */
-p {
-  margin: 16px 0;
-  line-height: 1.5;
-}
+`;

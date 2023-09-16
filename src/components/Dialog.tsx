@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect } from 'react';
+import { DialogOverlay, DialogContent, CloseButton, Title } from '../styles/DialogStyledComponents';
 
 interface DialogProps {
   isOpen: boolean;
@@ -36,15 +37,13 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, dialogClassName
   if (!isOpen) return null;
 
   return (
-    <div className="dialog-overlay" onClick={handleOverlayClick}>
-      <div className={`${dialogClassName} dialog-content`} onClick={handleDialogContentClick}>
-        <div className="close-button" onClick={onClose}>
-          ×
-        </div>
-        <h2>{title}</h2>
+    <DialogOverlay onClick={handleOverlayClick}>
+      <DialogContent className={dialogClassName} onClick={handleDialogContentClick}>
+        <CloseButton onClick={onClose}>×</CloseButton>
+        <Title>{title}</Title>
         {children}
-      </div>
-    </div>
+      </DialogContent>
+    </DialogOverlay>
   );
 };
 

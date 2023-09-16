@@ -1,10 +1,22 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import '../styles/SettingButton.css';
-import '../styles/Dialog.css';
-import '../styles/ControlButton.css';
 import Dialog from './Dialog';
 import { useSettings, Settings } from './SettingsContext';
 import { fetchAllKeysFromAudioStore, deleteAudioFromIndexedDB, upsertAudioToIndexedDB } from './dbUtils';
+import {
+  SettingsWrapper, //
+  Aside,
+  Section,
+  SettingsContainer,
+  SettingsRow,
+  SettingsContent,
+  SettingsSection,
+  Input,
+  Label,
+  CustomFileUpload,
+  DefaultFileUpload,
+  ToggleButton,
+  MessageBox,
+} from '../styles/SettingButtonStyledComponents';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
@@ -83,146 +95,143 @@ const SettingButton = () => {
 
   return (
     <>
-      {isMessageBoxVisible && ( //
-        <div className={`message-box ${isMessageBoxVisible ? 'show' : ''}`}>設定が変更されました。</div>
-      )}
+      {isMessageBoxVisible && <MessageBox className={isMessageBoxVisible ? 'show' : ''}>設定が変更されました。</MessageBox>}
       <div className="control-button setting-button" onClick={() => setDialogOpen(true)}>
         <i className={`fa fa-2x fa-gear`}></i>
       </div>
       {isDialogOpen && (
-        <Dialog
-          isOpen={isDialogOpen} //
-          onClose={() => setDialogOpen(false)}
-          title="Settings"
-          dialogClassName="settings"
-        >
+        <Dialog isOpen={isDialogOpen} onClose={() => setDialogOpen(false)} title="Settings" dialogClassName="settings">
           <>
-            <div className="settings-wrapper">
-              <aside>
-                <div className={`settings-section ${selectedSettingItem === 'notification' ? 'selected' : ''}`} onClick={() => setSelectedSettingItem('notification')}>
+            <SettingsContainer>
+              <Aside>
+                <SettingsSection
+                  className={selectedSettingItem === 'notification' ? 'selected' : ''} //
+                  onClick={() => setSelectedSettingItem('notification')}
+                >
                   通知
-                </div>
-                <div className={`settings-section ${selectedSettingItem === 'alarm' ? 'selected' : ''}`} onClick={() => setSelectedSettingItem('alarm')}>
+                </SettingsSection>
+                <SettingsSection
+                  className={selectedSettingItem === 'alarm' ? 'selected' : ''} //
+                  onClick={() => setSelectedSettingItem('alarm')}
+                >
                   アラーム
-                </div>
-                <div className={`settings-section ${selectedSettingItem === 'others' ? 'selected' : ''}`} onClick={() => setSelectedSettingItem('others')}>
+                </SettingsSection>
+                <SettingsSection
+                  className={selectedSettingItem === 'others' ? 'selected' : ''} //
+                  onClick={() => setSelectedSettingItem('others')}
+                >
                   その他
-                </div>
-              </aside>
-              <section>
+                </SettingsSection>
+              </Aside>
+              <Section>
                 {selectedSettingItem === 'notification' && (
                   <>
-                    <div className="settings-container notification-message">
-                      <label>通知メッセージ</label>
-                      <div className="settings-item">
-                        <div className="settings-row">
-                          <label htmlFor="notificationStartMessage">開始時</label>
-                          <input
-                            type="text" //
-                            id="notificationStartMessage"
-                            value={settings.notificationStartMessage}
-                            onChange={(e) => handleInputChange(e, 'notificationStartMessage')}
-                          />
-                        </div>
-                      </div>
+                    <SettingsWrapper className="notification-message">
+                      <Label>通知メッセージ</Label>
+                      <SettingsRow>
+                        <Label htmlFor="notificationStartMessage">開始時</Label>
+                        <Input type="text" id="notificationStartMessage" value={settings.notificationStartMessage} onChange={(e) => handleInputChange(e, 'notificationStartMessage')} />
+                      </SettingsRow>
 
-                      <div className="settings-item">
-                        <div className="settings-row">
-                          <label htmlFor="notificationFinishMessage">終了時</label>
-                          <input
-                            type="text" //
-                            id="notificationFinishMessage"
-                            value={settings.notificationFinishMessage}
-                            onChange={(e) => handleInputChange(e, 'notificationFinishMessage')}
-                          />
-                        </div>
-                      </div>
-                    </div>
+                      <SettingsRow>
+                        <Label htmlFor="notificationFinishMessage">終了時</Label>
+                        <Input
+                          type="text" //
+                          id="notificationFinishMessage"
+                          value={settings.notificationFinishMessage}
+                          onChange={(e) => handleInputChange(e, 'notificationFinishMessage')}
+                        />
+                      </SettingsRow>
+                    </SettingsWrapper>
 
-                    <div className="settings-container">
-                      <label htmlFor="notificationDisplayTime">表示時間</label>
-                      <input
-                        type="number" //
-                        id="notificationDisplayTime"
-                        value={settings.notificationDisplayTime / 1000}
-                        onChange={(e) => handleInputChange(e, 'notificationDisplayTime', 1000)}
-                      />
-                    </div>
+                    <SettingsWrapper>
+                      <SettingsRow>
+                        <Label htmlFor="notificationDisplayTime">表示時間(秒)</Label>
+                        <Input
+                          type="number" //
+                          id="notificationDisplayTime"
+                          value={settings.notificationDisplayTime / 1000}
+                          onChange={(e) => handleInputChange(e, 'notificationDisplayTime', 1000)}
+                        />
+                      </SettingsRow>
+                    </SettingsWrapper>
                   </>
                 )}
 
                 {selectedSettingItem === 'alarm' && (
                   <>
-                    <div className="settings-container alarm-sound">
-                      <div className="settings-item alarm-sound-upload">
-                        <label>アラーム音</label>
-                        <label htmlFor="alarmSound" className="custom-file-upload">
-                          Upload File
-                        </label>
-                        <input type="file" id="alarmSound" accept="audio/*" onChange={handleUploadingAlarmSound} />
-                      </div>
+                    <SettingsWrapper>
+                      <SettingsRow>
+                        <Label htmlFor="alarmSound">アラーム音</Label>
+                        <CustomFileUpload htmlFor="alarmSound">Upload File</CustomFileUpload>
+                        <DefaultFileUpload
+                          type="file" //
+                          id="alarmSound"
+                          accept="audio/*"
+                          onChange={handleUploadingAlarmSound}
+                        />
+                      </SettingsRow>
 
-                      <div className="settings-item">
-                        {settings.alarmSounds.map((key, index) => (
-                          <div key={index} className="settings-row">
-                            <input
-                              type="radio" //
-                              id={key}
-                              name="settings-radio-group"
-                              checked={settings.alarmSound === key}
-                              onChange={() => handleRadioChange(key)}
-                            />
-                            <label htmlFor={key} className="settings-content">
-                              {key}
-                            </label>
-                            <button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                      {settings.alarmSounds.map((key, index) => (
+                        <SettingsRow key={index}>
+                          <input
+                            type="radio" //
+                            id={key}
+                            name="settings-radio-group"
+                            checked={settings.alarmSound === key}
+                            onChange={() => handleRadioChange(key)}
+                          />
+                          <SettingsContent htmlFor={key}>{key}</SettingsContent>
+                          <button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</button>
+                        </SettingsRow>
+                      ))}
+                    </SettingsWrapper>
 
-                    <div className="settings-container">
-                      <label htmlFor="alarmTime">アラーム時間(秒)</label>
-                      <input
-                        type="number" //
-                        id="alarmTime"
-                        value={settings.alarmTime}
-                        onChange={(e) => handleInputChange(e, 'alarmTime')}
-                        max={20}
-                        min={1}
-                      />
-                    </div>
-                    <div className="settings-container">
-                      <label htmlFor="alarmVolume">音量</label>
-                      <input
-                        type="number" //
-                        id="alarmVolume"
-                        value={settings.alarmVolume}
-                        onChange={(e) => handleInputChange(e, 'alarmVolume')}
-                        step="0.1"
-                        max="1"
-                        min="0"
-                      />
-                    </div>
+                    <SettingsWrapper>
+                      <SettingsRow>
+                        <Label htmlFor="alarmTime">アラーム時間(秒)</Label>
+                        <Input
+                          type="number" //
+                          id="alarmTime"
+                          value={settings.alarmTime}
+                          onChange={(e) => handleInputChange(e, 'alarmTime')}
+                          max={20}
+                          min={1}
+                        />
+                      </SettingsRow>
+                    </SettingsWrapper>
+
+                    <SettingsWrapper>
+                      <SettingsRow>
+                        <Label htmlFor="alarmVolume">音量</Label>
+                        <Input
+                          type="number" //
+                          id="alarmVolume"
+                          value={settings.alarmVolume}
+                          onChange={(e) => handleInputChange(e, 'alarmVolume')}
+                          step="0.1"
+                          max="1"
+                          min="0"
+                        />
+                      </SettingsRow>
+                    </SettingsWrapper>
                   </>
                 )}
 
-                {selectedSettingItem === 'others' && (
+                {selectedSettingItem === 'others' && ( //
                   <>
-                    <div className="settings-container">
-                      <label htmlFor="repeatToggle">繰り返し</label>
-                      <button
-                        id="repeatToggle" //
-                        className={`toggle-button ${settings.isContinuous ? 'active' : ''}`}
-                        onClick={handleRepeatToggle}
-                      >
-                        {settings.isContinuous ? 'ON' : 'OFF'}
-                      </button>
-                    </div>
+                    <SettingsWrapper>
+                      <SettingsRow>
+                        <Label htmlFor="repeatToggle">繰り返し</Label>
+                        <ToggleButton id="repeatToggle" onClick={handleRepeatToggle}>
+                          {settings.isContinuous ? 'ON' : 'OFF'}
+                        </ToggleButton>
+                      </SettingsRow>
+                    </SettingsWrapper>
                   </>
                 )}
-              </section>
-            </div>
+              </Section>
+            </SettingsContainer>
           </>
         </Dialog>
       )}
