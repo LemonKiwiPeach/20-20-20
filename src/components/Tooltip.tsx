@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Tooltip.css';
+import { TooltipContainer, TooltipText, TooltipArrow } from '../styles/TooltipStyledComponents';
 
 interface TooltipProps {
   label: string;
@@ -10,13 +10,13 @@ interface TooltipProps {
 
 const Tooltip: React.FC<TooltipProps> = ({ label, toggledLabel, children, isToggled }) => {
   return (
-    <div className="tooltip-container">
+    <TooltipContainer>
       {children}
-      <div className="tooltip-text">
+      <TooltipText>
         <span>{isToggled ? toggledLabel : label}</span>
-        <div className="tooltip-arrow"></div> {/* Arrow element */}
-      </div>
-    </div>
+        <TooltipArrow />
+      </TooltipText>
+    </TooltipContainer>
   );
 };
 

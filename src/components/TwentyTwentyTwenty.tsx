@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/TwentyTwentyTwenty.css';
-import '../styles/Caption.css';
+import {
+  CircleProgressContainer, //
+  ControlButtonsTop,
+  ControlButtonsBottom,
+  TwentyTwentyTwentyStyled,
+} from '../styles/TwentyTwentyTwentyStyledComponents';
 import 'font-awesome/css/font-awesome.min.css';
 import { TimerSettings } from '../TimerSettings';
 import InfoButton from './InfoButton';
@@ -95,7 +99,6 @@ const TwentyTwentyTwenty = () => {
 
   useEffect(() => {
     const handleSpacebarPress = (event: KeyboardEvent) => {
-      console.log(event.code);
       switch (event.code) {
         case 'Space':
           handleStartAndPauseButton();
@@ -217,8 +220,8 @@ const TwentyTwentyTwenty = () => {
 
   return (
     <>
-      <div className="twenty-tweny-twenty">
-        <div className="circle-progress-container">
+      <TwentyTwentyTwentyStyled className="twenty-tweny-twenty">
+        <CircleProgressContainer>
           <ProgressCircle
             strokeDashoffset={strokeDashoffset} //
             timerSeconds={timerSeconds}
@@ -227,13 +230,13 @@ const TwentyTwentyTwenty = () => {
             breakTime={breakTime}
           />
 
-          <div className="control-buttons-top">
+          <ControlButtonsTop>
             <VolumeControl onVolumeChange={handleVolumeChange} />
             <InfoButton />
             <SettingButton />
-          </div>
+          </ControlButtonsTop>
 
-          <div className="control-buttons-bottom">
+          <ControlButtonsBottom>
             {/* Start and paue button */}
             <Tooltip label="Start" toggledLabel="Pause" isToggled={isRunning}>
               <ClockButton
@@ -260,11 +263,10 @@ const TwentyTwentyTwenty = () => {
                 icon="fa-rotate-left"
               />
             </Tooltip>
-          </div>
-
-        </div>
+          </ControlButtonsBottom>
+        </CircleProgressContainer>
         <audio ref={audioRef} src={process.env.PUBLIC_URL + `/${settings.alarmSound}`} preload="auto"></audio>
-      </div>
+      </TwentyTwentyTwentyStyled>
     </>
   );
 };

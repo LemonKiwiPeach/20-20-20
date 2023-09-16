@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/ClockButton.css';
+import { Button } from '../styles/ClockButtonStyledComponents';
 
 interface ClockButtonProps {
   onClick: () => void;
@@ -15,9 +15,9 @@ const ClockButton: React.FC<ClockButtonProps> = ({
   toggledIcon,
 }) => {
   return (
-    <button onClick={onClick} className={isToggled ? 'toggled' : ''}>
+    <Button onClick={onClick} className={isToggled ? 'toggled' : ''}>
       <i className={`fa ${isToggled && toggledIcon ? toggledIcon : icon}`}></i>
-    </button>
+    </Button>
   );
 };
 

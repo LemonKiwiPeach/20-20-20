@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/ProgressCircle.css';
+import { ProgressCircleStyled } from '../styles/ProgressCircleStyledComponents';
 
 interface ProgressCircleProps {
   strokeDashoffset: number;
@@ -13,7 +13,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ strokeDashoffset, timer
   return (
     <svg viewBox="0 0 200 200">
       <circle cx="100" cy="100" r="95" fill="#e0e8ff" stroke="#e0e0e0" strokeWidth="10"></circle>
-      <circle cx="100" cy="100" r="95" fill="none" stroke="#3498db" strokeWidth="10" className="progress-circle" style={{ strokeDashoffset }}></circle>
+      <ProgressCircleStyled cx="100" cy="100" r="95" fill="none" stroke="#3498db" strokeWidth="10" style={{ strokeDashoffset }}></ProgressCircleStyled>
       <text x="50%" y="50%" dy=".3em" textAnchor="middle" fontSize="30" fontFamily="Arial">
         {timerSeconds > 0 ? formatTime(timerSeconds) : formatTime(breakTime)}
       </text>
