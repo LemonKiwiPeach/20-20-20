@@ -29,6 +29,7 @@ const SettingButton = () => {
 
   useEffect(() => {
     const fetchAlarmSounds = async () => {
+      // Todo: This is called before the "audio" objectstore is created.
       const initialAlarmSounds = await fetchAllKeysFromAudioStore();
       updateSettings('alarmSounds', initialAlarmSounds);
     };
@@ -96,7 +97,7 @@ const SettingButton = () => {
 
   return (
     <>
-      {isMessageBoxVisible && <MessageBox className={isMessageBoxVisible ? 'show' : ''}>設定が変更されました。</MessageBox>}
+      {isMessageBoxVisible && <MessageBox className={isMessageBoxVisible ? 'show' : ''}>Settings have been changed.</MessageBox>}
       <i className={`fa fa-2x fa-gear`} onClick={() => setDialogOpen(true)}></i>
       {isDialogOpen && (
         <Dialog isOpen={isDialogOpen} onClose={() => setDialogOpen(false)} title="Settings" dialogClassName="settings">
