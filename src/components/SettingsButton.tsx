@@ -97,9 +97,7 @@ const SettingButton = () => {
   return (
     <>
       {isMessageBoxVisible && <MessageBox className={isMessageBoxVisible ? 'show' : ''}>設定が変更されました。</MessageBox>}
-      <div className="control-button setting-button" onClick={() => setDialogOpen(true)}>
-        <i className={`fa fa-2x fa-gear`}></i>
-      </div>
+      <i className={`fa fa-2x fa-gear`} onClick={() => setDialogOpen(true)}></i>
       {isDialogOpen && (
         <Dialog isOpen={isDialogOpen} onClose={() => setDialogOpen(false)} title="Settings" dialogClassName="settings">
           <>

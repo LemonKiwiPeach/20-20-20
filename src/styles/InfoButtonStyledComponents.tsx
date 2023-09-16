@@ -13,11 +13,3 @@ export const Description = styled.p`
   margin: 16px 0;
   line-height: 1.5;
 `;
-
-export const ControlButton = styled.div`
-  /* Your existing .control-button CSS here */
-`;
-
-export const InfoButtonStyled = styled.div`
-  /* Your existing .info-button CSS here */
-`;

@@ -119,6 +119,7 @@ export const MessageBox = styled.div`
   background: #3498db;
   padding: 10px;
   opacity: 0;
+  color: #000;
 
   &.show {
     animation: slideDownThenUp 3s ease-out forwards;

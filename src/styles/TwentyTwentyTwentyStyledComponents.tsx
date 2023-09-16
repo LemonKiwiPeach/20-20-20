@@ -62,5 +62,5 @@ export const ControlButtonsBottom = styled.div`
   pointer-events: auto;
   position: absolute;
   width: 100%;
-  bottom: 25%;
+  bottom: 15%;
 `;

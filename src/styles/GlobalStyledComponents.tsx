@@ -10,5 +10,6 @@ export const GlobalStyle = createGlobalStyle`
 
   .fa {
     color: #3498db;
+    cursor: pointer;
   }
 `;
