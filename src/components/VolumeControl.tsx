@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import '../styles/VolumeControl.css';
-import '../styles/ControlButton.css';
 import { useSettings } from './SettingsContext';
+import {
+  VolumeControlWrapper, //
+  ControlButton,
+  VolumeSlider,
+} from '../styles/VolumeControlStyledComponents';
 
 interface VolumeControlProps {
   onVolumeChange: (volume: number) => void;
@@ -23,25 +26,16 @@ const VolumeControl: React.FC<VolumeControlProps> = ({ onVolumeChange }) => {
   };
 
   return (
-    <div className="volume-control-wrapper">
-      <div className="control-button volume-control" onClick={toggleVolumeSlider}>
+    <VolumeControlWrapper>
+      <ControlButton onClick={toggleVolumeSlider}>
         <i className={`fa fa-2x ${settings.alarmVolume === 0 ? 'fa-volume-off' : 'fa-volume-up'}`}></i>
         {showVolumeSlider && (
-          <div className="volume-slider">
-            <input
-              type="range" //
-              id="volume"
-              name="volume"
-              min="0"
-              max="1"
-              step="0.1"
-              value={settings.alarmVolume}
-              onChange={handleVolumeChange}
-            />
-          </div>
+          <VolumeSlider>
+            <input type="range" id="volume" name="volume" min="0" max="1" step="0.1" value={settings.alarmVolume} onChange={handleVolumeChange} />
+          </VolumeSlider>
         )}
-      </div>
-    </div>
+      </ControlButton>
+    </VolumeControlWrapper>
   );
 };
 
