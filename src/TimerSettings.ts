@@ -22,7 +22,7 @@ export const TimerSettings: TimerSettings = {
   NOTIFICATION_BREAK_START: 'Break time starts',
   NOTIFICATION_BREAK_FINISH: 'Break time is over!',
   NOTIFICATION_DISPLAY_TIME: 5000,
-  ALARM_SOUND: 'break-music.mp3',
+  ALARM_SOUND: 'default-alarm-sound.mp3',
   ALARM_SOUNDS: [],
   ALARM_TIME: 20,
   ALARM_VOLUME: 0.1,

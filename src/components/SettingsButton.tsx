@@ -27,6 +27,7 @@ const SettingButton = () => {
   const [isMessageBoxVisible, setMessageBoxVisible] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [prevSettings, setPrevSettings] = useState<Settings | null>(null);
+  const [triggerInputType, setTriggerInputType] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAlarmSounds = async () => {
@@ -44,7 +45,9 @@ const SettingButton = () => {
       setPrevSettings(settings);
     } else {
       if (JSON.stringify(prevSettings) !== JSON.stringify(settings)) {
-        showMessageBox();
+        if (!isMessageBoxVisible) {
+          showMessageBox();
+        }
       }
       setPrevSettings(settings);
     }
@@ -52,6 +55,14 @@ const SettingButton = () => {
 
   const showMessageBox = () => {
     setMessageBoxVisible(true);
+
+    // You can use triggerInputType here to change the behavior or style of the message box
+    if (triggerInputType === 'someInputType') {
+      // Do something specific for 'someInputType'
+    } else if (triggerInputType === 'anotherInputType') {
+      // Do something specific for 'anotherInputType'
+    }
+
     setTimeout(() => {
       setMessageBoxVisible(false);
     }, 3000);
@@ -63,6 +74,7 @@ const SettingButton = () => {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>, key: string, multiplier = 1) => {
     updateSettings(key, e.target.valueAsNumber ? e.target.valueAsNumber * multiplier : e.target.value);
+    setTriggerInputType(key);
   };
 
   // Alarm sound
@@ -131,7 +143,17 @@ const SettingButton = () => {
                       <Label>Notification messages</Label>
                       <SettingsRow>
                         <Label htmlFor="notificationStartMessage">At alarm start</Label>
-                        <Input type="text" id="notificationStartMessage" value={settings.notificationStartMessage} onChange={(e) => handleInputChange(e, 'notificationStartMessage')} />
+                        <Input //
+                          type="text"
+                          id="notificationStartMessage"
+                          value={settings.notificationStartMessage}
+                          onChange={(e) => handleInputChange(e, 'notificationStartMessage')}
+                          onBlur={() => {
+                            if (settings !== prevSettings) {
+                              showMessageBox();
+                            }
+                          }}
+                        />
                       </SettingsRow>
 
                       <SettingsRow>
