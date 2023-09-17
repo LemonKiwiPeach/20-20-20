@@ -9,15 +9,17 @@ interface ProgressCircleProps {
   breakTime: number;
 }
 
+const STROKE_LENGTH = 595;
+
 const ProgressCircle: React.FC<ProgressCircleProps> = ({ timerSeconds, isRunning, breakTime }) => {
   // Progress circle strokeDashoffset
   const progress =
     timerSeconds > 0
       ? // timer mode
-        ((TimerSettings.TWENTY_MINUTES - timerSeconds) / TimerSettings.TWENTY_MINUTES) * TimerSettings.STROKE_LENGTH
+        ((TimerSettings.TWENTY_MINUTES - timerSeconds) / TimerSettings.TWENTY_MINUTES) * STROKE_LENGTH
       : // Alarm mode
-        ((TimerSettings.BREAK_TIME - breakTime) / TimerSettings.BREAK_TIME) * TimerSettings.STROKE_LENGTH;
-  const strokeDashoffset = TimerSettings.STROKE_LENGTH - progress;
+        ((TimerSettings.TWENTY_SECONDS - breakTime) / TimerSettings.TWENTY_SECONDS) * STROKE_LENGTH;
+  const strokeDashoffset = STROKE_LENGTH - progress;
 
   // Alarm time
   const alarmTime = new Date();

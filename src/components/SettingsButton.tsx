@@ -219,20 +219,6 @@ const SettingButton = () => {
 
                     <SettingsWrapper>
                       <SettingsRow>
-                        <Label htmlFor="alarmTime">Alarm time (seconds)</Label>
-                        <Input
-                          type="number" //
-                          id="alarmTime"
-                          value={settings.alarmTime}
-                          onChange={(e) => handleInputChange(e, 'alarmTime')}
-                          max={20}
-                          min={1}
-                        />
-                      </SettingsRow>
-                    </SettingsWrapper>
-
-                    <SettingsWrapper>
-                      <SettingsRow>
                         <Label htmlFor="alarmVolume">Volume</Label>
                         <Input
                           type="number" //

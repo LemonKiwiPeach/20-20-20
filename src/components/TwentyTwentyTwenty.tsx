@@ -119,7 +119,7 @@ const TwentyTwentyTwenty = () => {
       if (breakTime === 0) {
         sendNotification(settings.notificationStartMessage);
         startAlarm();
-      } else if (breakTime >= TimerSettings.BREAK_TIME) {
+      } else if (breakTime >= TimerSettings.TWENTY_SECONDS) {
         resetAlarm();
         sendNotification(settings.notificationFinishMessage);
         resetApp();
@@ -129,6 +129,7 @@ const TwentyTwentyTwenty = () => {
 
   useEffect(() => {
     if (isRunning) {
+      console.log(`startTimer: ${breakTime}`);
       startTimer(timerSeconds, breakTime);
     } else {
       stopTimer();

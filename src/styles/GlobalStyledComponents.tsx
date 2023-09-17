@@ -1,4 +1,5 @@
-import { styled, createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
+import { TimerSettings } from '../TimerSettings';
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -34,7 +35,7 @@ export const GlobalStyle = createGlobalStyle`
       }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
       padding: 3px 6px;
     }
   }
@@ -44,7 +45,7 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
     .fa {
       width:16px;
       height:16px;

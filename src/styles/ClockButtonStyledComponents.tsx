@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { TimerSettings } from '../TimerSettings';
 
 export const Button = styled.button`
   padding: 10px 20px;
@@ -27,7 +28,7 @@ export const Button = styled.button`
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
     padding: 3px 6px;
   }
 `;

@@ -7,7 +7,6 @@ export interface Settings {
   notificationDisplayTime: number;
   alarmSound: string;
   alarmSounds: string[];
-  alarmTime: number;
   alarmVolume: number;
   isContinuous: boolean;
 }
@@ -18,7 +17,6 @@ const defaultSettings: Settings = {
   notificationDisplayTime: TimerSettings.NOTIFICATION_DISPLAY_TIME,
   alarmSound: TimerSettings.ALARM_SOUND,
   alarmSounds: TimerSettings.ALARM_SOUNDS,
-  alarmTime: TimerSettings.ALARM_TIME,
   alarmVolume: TimerSettings.ALARM_VOLUME,
   isContinuous: TimerSettings.IS_CONTINUOUS,
 };
