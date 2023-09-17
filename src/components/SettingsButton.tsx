@@ -1,43 +1,20 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
+import useDialog from './useDialog';
 import Dialog from './Dialog';
 import { useSettings, Settings } from './SettingsContext';
-import { fetchAllKeysFromAudioStore, deleteAudioFromIndexedDB, upsertAudioToIndexedDB } from './dbUtils';
-import {
-  SettingsWrapper, //
-  Aside,
-  Section,
-  SettingsContainer,
-  SettingsRow,
-  SettingsContent,
-  SettingsSection,
-  Input,
-  Label,
-  CustomFileUpload,
-  DefaultFileUpload,
-  ToggleButton,
-  MessageBox,
-  Caption,
-} from '../styles/SettingButtonStyledComponents';
+import { deleteAudioFromIndexedDB, upsertAudioToIndexedDB } from './dbUtils';
+import { SettingsWrapper, Aside, Section, SettingsContainer, SettingsRow, SettingsContent, SettingsSection, Input, Label, CustomFileUpload, DefaultFileUpload, ToggleButton, MessageBox, Caption } from '../styles/SettingButtonStyledComponents';
 import { Button } from '../styles/ClockButtonStyledComponents';
+import { DefaultSettings } from '../DefaultSettings';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const { isOpen, openDialog, closeDialog } = useDialog(false);
   const [selectedSettingItem, setSelectedSettingItem] = useState<string>('notification');
   const [isMessageBoxVisible, setMessageBoxVisible] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [prevSettings, setPrevSettings] = useState<Settings | null>(null);
   const [triggerInputType, setTriggerInputType] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAlarmSounds = async () => {
-      // Todo: This is called before the "audio" objectstore is created.
-      const initialAlarmSounds = await fetchAllKeysFromAudioStore();
-      updateSettings('alarmSounds', initialAlarmSounds);
-    };
-
-    fetchAlarmSounds();
-  }, []);
 
   useEffect(() => {
     if (isInitialLoad) {
@@ -111,146 +88,146 @@ const SettingButton = () => {
   return (
     <>
       {isMessageBoxVisible && <MessageBox className={isMessageBoxVisible ? 'show' : ''}>Settings have been changed.</MessageBox>}
-      <i className={`fa fa-2x fa-gear`} onClick={() => setDialogOpen(true)}></i>
-      {isDialogOpen && (
-        <Dialog isOpen={isDialogOpen} onClose={() => setDialogOpen(false)} title="Settings" dialogClassName="settings">
-          <>
-            <SettingsContainer>
-              <Aside>
-                <SettingsSection
-                  className={selectedSettingItem === 'notification' ? 'selected' : ''} //
-                  onClick={() => setSelectedSettingItem('notification')}
-                >
-                  Notification
-                </SettingsSection>
-                <SettingsSection
-                  className={selectedSettingItem === 'alarm' ? 'selected' : ''} //
-                  onClick={() => setSelectedSettingItem('alarm')}
-                >
-                  Alarm
-                </SettingsSection>
-                <SettingsSection
-                  className={selectedSettingItem === 'others' ? 'selected' : ''} //
-                  onClick={() => setSelectedSettingItem('others')}
-                >
-                  Others
-                </SettingsSection>
-              </Aside>
-              <Section>
-                {selectedSettingItem === 'notification' && (
-                  <>
-                    <SettingsWrapper className="notification-message">
-                      <Label>Notification messages</Label>
-                      <SettingsRow>
-                        <Label htmlFor="notificationStartMessage">At alarm start</Label>
-                        <Input //
-                          type="text"
-                          id="notificationStartMessage"
-                          value={settings.notificationStartMessage}
-                          onChange={(e) => handleInputChange(e, 'notificationStartMessage')}
-                          onBlur={() => {
-                            if (settings !== prevSettings) {
-                              showMessageBox();
-                            }
-                          }}
+      <i className={`fa fa-2x fa-gear`} onClick={openDialog}></i>
+      <Dialog isOpen={isOpen} onClose={closeDialog} title="Settings" dialogClassName="settings">
+        <>
+          <SettingsContainer>
+            <Aside>
+              <SettingsSection
+                className={selectedSettingItem === 'notification' ? 'selected' : ''} //
+                onClick={() => setSelectedSettingItem('notification')}
+              >
+                Notification
+              </SettingsSection>
+              <SettingsSection
+                className={selectedSettingItem === 'alarm' ? 'selected' : ''} //
+                onClick={() => setSelectedSettingItem('alarm')}
+              >
+                Alarm
+              </SettingsSection>
+              <SettingsSection
+                className={selectedSettingItem === 'others' ? 'selected' : ''} //
+                onClick={() => setSelectedSettingItem('others')}
+              >
+                Others
+              </SettingsSection>
+            </Aside>
+            <Section>
+              {selectedSettingItem === 'notification' && (
+                <>
+                  <SettingsWrapper className="notification-message">
+                    <Label>Notification messages</Label>
+                    <SettingsRow>
+                      <Label htmlFor="notificationStartMessage">At alarm start</Label>
+                      <Input //
+                        type="text"
+                        id="notificationStartMessage"
+                        value={settings.notificationStartMessage}
+                        onChange={(e) => handleInputChange(e, 'notificationStartMessage')}
+                        onBlur={() => {
+                          if (settings !== prevSettings) {
+                            showMessageBox();
+                          }
+                        }}
+                      />
+                    </SettingsRow>
+
+                    <SettingsRow>
+                      <Label htmlFor="notificationFinishMessage">At alarm end</Label>
+                      <Input
+                        type="text" //
+                        id="notificationFinishMessage"
+                        value={settings.notificationFinishMessage}
+                        onChange={(e) => handleInputChange(e, 'notificationFinishMessage')}
+                      />
+                    </SettingsRow>
+                  </SettingsWrapper>
+
+                  <SettingsWrapper>
+                    <SettingsRow>
+                      <Label htmlFor="notificationDisplayTime">Display time (seconds)</Label>
+                      <Input
+                        type="number" //
+                        id="notificationDisplayTime"
+                        value={settings.notificationDisplayTime / 1000}
+                        onChange={(e) => handleInputChange(e, 'notificationDisplayTime', 1000)}
+                        max={DefaultSettings.TWENTY_SECONDS}
+                        min="1"
+                      />
+                    </SettingsRow>
+                  </SettingsWrapper>
+                </>
+              )}
+
+              {selectedSettingItem === 'alarm' && (
+                <>
+                  <SettingsWrapper>
+                    <SettingsRow>
+                      <Label htmlFor="alarmSound">Alarm sound</Label>
+                      <CustomFileUpload htmlFor="alarmSound">Upload File</CustomFileUpload>
+                      <DefaultFileUpload
+                        type="file" //
+                        id="alarmSound"
+                        accept="audio/*"
+                        onChange={handleUploadingAlarmSound}
+                      />
+                    </SettingsRow>
+
+                    {settings.alarmSounds.map((key, index) => (
+                      <SettingsRow key={index}>
+                        <input
+                          type="radio" //
+                          id={key}
+                          name="settings-radio-group"
+                          checked={settings.alarmSound === key}
+                          onChange={() => handleRadioChange(key)}
                         />
+                        <SettingsContent htmlFor={key}>{key}</SettingsContent>
+                        <Button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</Button>
                       </SettingsRow>
+                    ))}
 
-                      <SettingsRow>
-                        <Label htmlFor="notificationFinishMessage">At alarm end</Label>
-                        <Input
-                          type="text" //
-                          id="notificationFinishMessage"
-                          value={settings.notificationFinishMessage}
-                          onChange={(e) => handleInputChange(e, 'notificationFinishMessage')}
-                        />
-                      </SettingsRow>
-                    </SettingsWrapper>
+                    <Caption>
+                      Sound from{' '}
+                      <a href="https://www.zapsplat.com" target="_blank" rel="noopener noreferrer">
+                        Zapsplat.com
+                      </a>
+                    </Caption>
+                  </SettingsWrapper>
 
-                    <SettingsWrapper>
-                      <SettingsRow>
-                        <Label htmlFor="notificationDisplayTime">Display time (seconds)</Label>
-                        <Input
-                          type="number" //
-                          id="notificationDisplayTime"
-                          value={settings.notificationDisplayTime / 1000}
-                          onChange={(e) => handleInputChange(e, 'notificationDisplayTime', 1000)}
-                        />
-                      </SettingsRow>
-                    </SettingsWrapper>
-                  </>
-                )}
+                  <SettingsWrapper>
+                    <SettingsRow>
+                      <Label htmlFor="alarmVolume">Volume</Label>
+                      <Input
+                        type="number" //
+                        id="alarmVolume"
+                        value={settings.alarmVolume}
+                        onChange={(e) => handleInputChange(e, 'alarmVolume')}
+                        step="0.1"
+                        max="1"
+                        min="0"
+                      />
+                    </SettingsRow>
+                  </SettingsWrapper>
+                </>
+              )}
 
-                {selectedSettingItem === 'alarm' && (
-                  <>
-                    <SettingsWrapper>
-                      <SettingsRow>
-                        <Label htmlFor="alarmSound">Alarm sound</Label>
-                        <CustomFileUpload htmlFor="alarmSound">Upload File</CustomFileUpload>
-                        <DefaultFileUpload
-                          type="file" //
-                          id="alarmSound"
-                          accept="audio/*"
-                          onChange={handleUploadingAlarmSound}
-                        />
-                      </SettingsRow>
-
-                      {settings.alarmSounds.map((key, index) => (
-                        <SettingsRow key={index}>
-                          <input
-                            type="radio" //
-                            id={key}
-                            name="settings-radio-group"
-                            checked={settings.alarmSound === key}
-                            onChange={() => handleRadioChange(key)}
-                          />
-                          <SettingsContent htmlFor={key}>{key}</SettingsContent>
-                          <Button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</Button>
-                        </SettingsRow>
-                      ))}
-
-                      <Caption>
-                        Sound from{' '}
-                        <a href="https://www.zapsplat.com" target="_blank" rel="noopener noreferrer">
-                          Zapsplat.com
-                        </a>
-                      </Caption>
-                    </SettingsWrapper>
-
-                    <SettingsWrapper>
-                      <SettingsRow>
-                        <Label htmlFor="alarmVolume">Volume</Label>
-                        <Input
-                          type="number" //
-                          id="alarmVolume"
-                          value={settings.alarmVolume}
-                          onChange={(e) => handleInputChange(e, 'alarmVolume')}
-                          step="0.1"
-                          max="1"
-                          min="0"
-                        />
-                      </SettingsRow>
-                    </SettingsWrapper>
-                  </>
-                )}
-
-                {selectedSettingItem === 'others' && (
-                  <>
-                    <SettingsWrapper>
-                      <SettingsRow>
-                        <Label htmlFor="repeatToggle">Repeat mode</Label>
-                        <ToggleButton className={settings.isContinuous ? 'active' : ''} id="repeatToggle" onClick={handleRepeatToggle}>
-                          {settings.isContinuous ? 'ON' : 'OFF'}
-                        </ToggleButton>
-                      </SettingsRow>
-                    </SettingsWrapper>
-                  </>
-                )}
-              </Section>
-            </SettingsContainer>
-          </>
-        </Dialog>
-      )}
+              {selectedSettingItem === 'others' && (
+                <>
+                  <SettingsWrapper>
+                    <SettingsRow>
+                      <Label htmlFor="repeatToggle">Repeat mode</Label>
+                      <ToggleButton className={settings.isContinuous ? 'active' : ''} id="repeatToggle" onClick={handleRepeatToggle}>
+                        {settings.isContinuous ? 'ON' : 'OFF'}
+                      </ToggleButton>
+                    </SettingsRow>
+                  </SettingsWrapper>
+                </>
+              )}
+            </Section>
+          </SettingsContainer>
+        </>
+      </Dialog>
     </>
   );
 };

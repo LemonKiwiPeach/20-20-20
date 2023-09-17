@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 export const useTimer = (initialSeconds: number) => {
   const [timerSeconds, setTimerSeconds] = useState<number>(initialSeconds);
@@ -25,7 +25,7 @@ export const useTimer = (initialSeconds: number) => {
 
   function resetTimer() {
     stopTimer();
-    startTimer(TimerSettings.TWENTY_MINUTES, 0);
+    startTimer(DefaultSettings.TWENTY_MINUTES, 0);
   }
 
   function terminateTimer() {

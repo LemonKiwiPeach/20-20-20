@@ -1,7 +1,8 @@
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { openDB, DBSchema } from 'idb';
+import { DefaultSettings } from '../DefaultSettings';
 
 interface AudioDB extends DBSchema {
-  audio: {
+  [DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME]: {
     key: string;
     value: Blob;
   };
@@ -15,12 +16,12 @@ export const upsertAudioToIndexedDB = async (audioBlob: Blob, audioName: string)
       return;
     }
 
-    const db = await openDB<AudioDB>('DB-20-20-20', 1, {
+    const db = await openDB<AudioDB>(DefaultSettings.INDEXED_DB_NAME, 1, {
       upgrade(db) {
         console.log('Upgrade event triggered');
-        if (!db.objectStoreNames.contains('audio')) {
-          console.log("Creating 'audio' object store");
-          db.createObjectStore('audio');
+        if (!db.objectStoreNames.contains(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME)) {
+          console.log('Creating INDEXED_DB_OBJECT_STORE_NAME object store');
+          db.createObjectStore(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME);
         }
       },
       blocked() {
@@ -34,11 +35,11 @@ export const upsertAudioToIndexedDB = async (audioBlob: Blob, audioName: string)
       },
     });
 
-    if (db.objectStoreNames.contains('audio')) {
-      const tx = db.transaction('audio', 'readwrite');
+    if (db.objectStoreNames.contains(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME)) {
+      const tx = db.transaction(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME, 'readwrite');
       await tx.store.put(audioBlob, audioName);
     } else {
-      console.error("The 'audio' object store does not exist.");
+      console.error('The INDEXED_DB_OBJECT_STORE_NAME object store does not exist.');
     }
   } catch (error) {
     console.error('An error occurred:', error);
@@ -49,8 +50,8 @@ export const upsertAudioToIndexedDB = async (audioBlob: Blob, audioName: string)
 export const fetchAudioFromIndexedDB = async (audioName: string): Promise<Blob | undefined> => {
   let blob: Blob | undefined;
   try {
-    const db = await openDB<AudioDB>('DB-20-20-20', 1);
-    blob = await db.get('audio', audioName);
+    const db = await openDB<AudioDB>(DefaultSettings.INDEXED_DB_NAME, 1);
+    blob = await db.get(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME, audioName);
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -60,24 +61,24 @@ export const fetchAudioFromIndexedDB = async (audioName: string): Promise<Blob |
 // Delete: Remove an audio blob by its name
 export const deleteAudioFromIndexedDB = async (audioName: string): Promise<void> => {
   try {
-    const db = await openDB<AudioDB>('DB-20-20-20', 1);
-    const tx = db.transaction('audio', 'readwrite');
+    const db = await openDB<AudioDB>(DefaultSettings.INDEXED_DB_NAME, 1);
+    const tx = db.transaction(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME, 'readwrite');
     await tx.store.delete(audioName);
   } catch (error) {
     console.error('An error occurred:', error);
   }
 };
 
-// Fetch all keys from the 'audio' object store
+// Fetch all keys from the INDEXED_DB_OBJECT_STORE_NAME object store
 export const fetchAllKeysFromAudioStore = async (): Promise<string[]> => {
   let keys: string[] = [];
   try {
     const audioExists = await checkIfAudioStoreExists();
     if (audioExists) {
-      const db = await openDB<AudioDB>('DB-20-20-20', 1);
-      keys = await db.getAllKeys('audio');
+      const db = await openDB<AudioDB>(DefaultSettings.INDEXED_DB_NAME, 1);
+      keys = await db.getAllKeys(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME);
     } else {
-      console.error("The 'audio' object store does not exist.");
+      console.error('The INDEXED_DB_OBJECT_STORE_NAME object store does not exist.');
     }
   } catch (error) {
     console.error('An error occurred:', error);
@@ -85,11 +86,11 @@ export const fetchAllKeysFromAudioStore = async (): Promise<string[]> => {
   return keys;
 };
 
-// Check if 'audio' object store exists
+// Check if INDEXED_DB_OBJECT_STORE_NAME object store exists
 export const checkIfAudioStoreExists = async (): Promise<boolean> => {
   try {
-    const db = await openDB<AudioDB>('DB-20-20-20', 1);
-    return db.objectStoreNames.contains('audio');
+    const db = await openDB<AudioDB>(DefaultSettings.INDEXED_DB_NAME, 1);
+    return db.objectStoreNames.contains(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME);
   } catch (error) {
     console.error('An error occurred:', error);
     return false;

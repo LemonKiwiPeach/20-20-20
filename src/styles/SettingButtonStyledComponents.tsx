@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 export const SettingsContainer = styled.div`
   height: 400px;
@@ -154,7 +154,7 @@ export const Caption = styled.div`
   width: 100%;
   pointer-events: auto;
 
-  @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
+  @media (max-width: ${DefaultSettings.SMALL_SCREEN}px) {
     bottom: 1%;
   }
 

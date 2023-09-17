@@ -1,4 +1,6 @@
-interface TimerSettings {
+const INDEXED_DB_OBJECT_STORE_NAME = 'alarm-sound';
+
+interface DefaultSettings {
   TWENTY_MINUTES: number;
   TWENTY_SECONDS: number;
   SMALL_SCREEN: number;
@@ -9,9 +11,11 @@ interface TimerSettings {
   ALARM_SOUNDS: string[];
   ALARM_VOLUME: number;
   IS_CONTINUOUS: boolean;
+  INDEXED_DB_NAME: string;
+  INDEXED_DB_OBJECT_STORE_NAME: typeof INDEXED_DB_OBJECT_STORE_NAME;
 }
 
-export const TimerSettings: TimerSettings = {
+export const DefaultSettings: DefaultSettings = {
   TWENTY_MINUTES: 1200,
   TWENTY_SECONDS: 20,
   SMALL_SCREEN: 768,
@@ -22,4 +26,6 @@ export const TimerSettings: TimerSettings = {
   ALARM_SOUNDS: [],
   ALARM_VOLUME: 0.1,
   IS_CONTINUOUS: true,
+  INDEXED_DB_NAME: 'DB-20-20-20',
+  INDEXED_DB_OBJECT_STORE_NAME,
 };

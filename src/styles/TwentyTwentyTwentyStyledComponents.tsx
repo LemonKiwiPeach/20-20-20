@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 export const TwentyTwentyTwentyStyled = styled.div`
   height: 100vh;
@@ -16,7 +16,7 @@ export const CircleProgressContainer = styled.div`
   position: relative;
   pointer-events: none;
 
-  @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
+  @media (max-width: ${DefaultSettings.SMALL_SCREEN}px) {
     width: 80%;
     max-width: 300px;
   }
@@ -54,8 +54,10 @@ export const ControlButtonsTop = styled.div`
     height: 32px;
   }
 
-  @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
+  @media (max-width: ${DefaultSettings.SMALL_SCREEN}px) {
     i {
+      width: 16px;
+      height: 16px;
       font-size: inherit;
     }
   }

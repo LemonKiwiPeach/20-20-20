@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 export interface Settings {
   notificationStartMessage: string;
@@ -12,13 +12,13 @@ export interface Settings {
 }
 
 const defaultSettings: Settings = {
-  notificationStartMessage: TimerSettings.NOTIFICATION_BREAK_START,
-  notificationFinishMessage: TimerSettings.NOTIFICATION_BREAK_FINISH,
-  notificationDisplayTime: TimerSettings.NOTIFICATION_DISPLAY_TIME,
-  alarmSound: TimerSettings.ALARM_SOUND,
-  alarmSounds: TimerSettings.ALARM_SOUNDS,
-  alarmVolume: TimerSettings.ALARM_VOLUME,
-  isContinuous: TimerSettings.IS_CONTINUOUS,
+  notificationStartMessage: DefaultSettings.NOTIFICATION_BREAK_START,
+  notificationFinishMessage: DefaultSettings.NOTIFICATION_BREAK_FINISH,
+  notificationDisplayTime: DefaultSettings.NOTIFICATION_DISPLAY_TIME,
+  alarmSound: DefaultSettings.ALARM_SOUND,
+  alarmSounds: DefaultSettings.ALARM_SOUNDS,
+  alarmVolume: DefaultSettings.ALARM_VOLUME,
+  isContinuous: DefaultSettings.IS_CONTINUOUS,
 };
 
 const SettingsContext = createContext<{

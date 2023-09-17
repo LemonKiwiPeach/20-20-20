@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProgressCircleStyled } from '../styles/ProgressCircleStyledComponents';
 // Settings
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 interface ProgressCircleProps {
   timerSeconds: number;
@@ -16,9 +16,9 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ timerSeconds, isRunning
   const progress =
     timerSeconds > 0
       ? // timer mode
-        ((TimerSettings.TWENTY_MINUTES - timerSeconds) / TimerSettings.TWENTY_MINUTES) * STROKE_LENGTH
+        ((DefaultSettings.TWENTY_MINUTES - timerSeconds) / DefaultSettings.TWENTY_MINUTES) * STROKE_LENGTH
       : // Alarm mode
-        ((TimerSettings.TWENTY_SECONDS - breakTime) / TimerSettings.TWENTY_SECONDS) * STROKE_LENGTH;
+        ((DefaultSettings.TWENTY_SECONDS - breakTime) / DefaultSettings.TWENTY_SECONDS) * STROKE_LENGTH;
   const strokeDashoffset = STROKE_LENGTH - progress;
 
   // Alarm time

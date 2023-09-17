@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 export const CircleProgressContainer = styled.div`
   width: 100%;
@@ -7,7 +7,7 @@ export const CircleProgressContainer = styled.div`
   position: relative;
   pointer-events: none;
 
-  @media (max-width: ${TimerSettings.SMALL_SCREEN}px) {
+  @media (max-width: ${DefaultSettings.SMALL_SCREEN}px) {
     width: 80%;
     max-width: 300px;
   }

@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useSettings } from './SettingsContext';
+import { DefaultSettings } from '../DefaultSettings';
 import { openDB } from 'idb';
 
 export const useAlarm = () => {
@@ -9,8 +10,8 @@ export const useAlarm = () => {
   async function startAlarm() {
     try {
       if (audioRef.current) {
-        const db = await openDB('DB-20-20-20', 1);
-        const file = await db.get('audio', settings.alarmSound);
+        const db = await openDB(DefaultSettings.INDEXED_DB_NAME, 1);
+        const file = await db.get(DefaultSettings.INDEXED_DB_OBJECT_STORE_NAME, settings.alarmSound);
 
         if (!file) {
           console.error('File not found in IndexedDB.');

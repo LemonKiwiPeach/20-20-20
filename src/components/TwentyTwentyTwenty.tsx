@@ -12,7 +12,7 @@ import { CircleProgressContainer, ControlButtonsTop, ControlButtonsBottom, Twent
 import 'font-awesome/css/font-awesome.min.css';
 
 // Settings
-import { TimerSettings } from '../TimerSettings';
+import { DefaultSettings } from '../DefaultSettings';
 
 // Custom hooks
 import { useTimer } from './useTimer';
@@ -26,7 +26,7 @@ import { upsertAudioToIndexedDB, checkIfAudioStoreExists, fetchAllKeysFromAudioS
 const TwentyTwentyTwenty = () => {
   const { settings, setSettings } = useSettings();
   // タイマーの残り時間
-  const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', TimerSettings.TWENTY_MINUTES);
+  const [initialTimerSeconds, setInitialTimerSeconds] = useLocalStorage<number>('remainingTimerSeconds', DefaultSettings.TWENTY_MINUTES);
   const { timerSeconds, setTimerSeconds, initTimer, breakTime, setBreakTime, startTimer, stopTimer, resetTimer, terminateTimer } = useTimer(initialTimerSeconds);
   // アプリが起動中かどうか
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -119,7 +119,7 @@ const TwentyTwentyTwenty = () => {
       if (breakTime === 0) {
         sendNotification(settings.notificationStartMessage);
         startAlarm();
-      } else if (breakTime >= TimerSettings.TWENTY_SECONDS) {
+      } else if (breakTime >= DefaultSettings.TWENTY_SECONDS) {
         resetAlarm();
         sendNotification(settings.notificationFinishMessage);
         resetApp();
@@ -182,7 +182,7 @@ const TwentyTwentyTwenty = () => {
 
   // App reset button
   const resetApp = () => {
-    setTimerSeconds(TimerSettings.TWENTY_MINUTES);
+    setTimerSeconds(DefaultSettings.TWENTY_MINUTES);
     setBreakTime(0);
     resetAlarm();
 
