@@ -18,6 +18,7 @@ import {
   MessageBox,
   Caption,
 } from '../styles/SettingButtonStyledComponents';
+import { Button } from '../styles/ClockButtonStyledComponents';
 
 const SettingButton = () => {
   const { settings, setSettings } = useSettings();
@@ -182,7 +183,7 @@ const SettingButton = () => {
                             onChange={() => handleRadioChange(key)}
                           />
                           <SettingsContent htmlFor={key}>{key}</SettingsContent>
-                          <button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</button>
+                          <Button onClick={() => handleDeleteAlarmSound(key, index)}>Delete</Button>
                         </SettingsRow>
                       ))}
 
@@ -225,12 +226,12 @@ const SettingButton = () => {
                   </>
                 )}
 
-                {selectedSettingItem === 'others' && ( //
+                {selectedSettingItem === 'others' && (
                   <>
                     <SettingsWrapper>
                       <SettingsRow>
                         <Label htmlFor="repeatToggle">Repeat mode</Label>
-                        <ToggleButton id="repeatToggle" onClick={handleRepeatToggle}>
+                        <ToggleButton className={settings.isContinuous ? 'active' : ''} id="repeatToggle" onClick={handleRepeatToggle}>
                           {settings.isContinuous ? 'ON' : 'OFF'}
                         </ToggleButton>
                       </SettingsRow>

@@ -48,6 +48,11 @@ export const ControlButtonsTop = styled.div`
   gap: 0 16px;
   pointer-events: all;
 
+  i {
+    width: 32px;
+    height: 32px;
+  }
+
   @media (max-width: 768px) {
     i {
       font-size: inherit;
